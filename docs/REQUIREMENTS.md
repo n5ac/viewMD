@@ -51,7 +51,7 @@ owner's approval.
 | REQ-005 | The UI is crisp, clean and easy to understand: native macOS controls, toolbar and menus following Apple's Human Interface Guidelines, SF Symbols, and no clutter. | Must | Agreed | Manual design review |
 | REQ-006 | Dependencies are kept small and GPL-3.0-compatible: Apple's `swift-markdown` (Apache-2.0) for parsing and `highlight.js` (BSD-3-Clause), bundled in the app. The app needs no network access to work. | Must | In progress | Package manifest review |
 | REQ-007 | Rendering a document never runs scripts from that document: `<script>` tags and inline event handlers in raw HTML are removed. | Should | Agreed | Sanitizer unit tests |
-| REQ-008 | A GitHub Actions workflow builds the app and runs the full test suite on every push and pull request (unit tests; UI tests run locally, see `CLAUDE.md`). | Should | In progress | CI run status |
+| REQ-008 | A GitHub Actions workflow builds the app and runs the full test suite on every push and pull request (unit tests; UI tests run locally, see `CLAUDE.md`). | Should | Done | CI run status (first green run 2026-11-14) |
 
 ## Change log
 
@@ -61,3 +61,4 @@ owner's approval.
 | 2026-11-14 | Owner's app requirements added (REQ-010 to REQ-018, REQ-005). Derived requirements REQ-004, REQ-006 to REQ-008 and REQ-019 to REQ-023 proposed. |
 | 2026-11-14 | Owner approved all Proposed requirements; all now Agreed. |
 | 2026-11-14 | Phase 0: REQ-001 and REQ-004 Done; REQ-006, REQ-008 and REQ-010 In progress. |
+| 2026-11-14 | REQ-008 Done: first CI run passed. |
