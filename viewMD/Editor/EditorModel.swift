@@ -52,8 +52,38 @@ final class EditorModel {
         isSourceVisible ? lastFocusedPane : .preview
     }
 
+    /// The editor model of the window the user most recently worked in.
+    ///
+    /// Menu commands (View and Format menus, ⌘B, …) act on this. It's
+    /// updated when either pane of a window gains focus and when a window
+    /// appears. A SwiftUI `FocusedValue` isn't used, because menu shortcuts
+    /// bound through it never fired (see `ViewCommands`).
+    static weak var active: EditorModel?
+
+    /// Makes this window's model the target of menu commands.
+    func becomeActive() {
+        Self.active = self
+    }
+
     /// Shows or hides the source pane.
     func toggleSourcePane() {
         isSourceVisible.toggle()
+    }
+
+    /// Inserts a Markdown structure in the active pane (REQ-015).
+    ///
+    /// In the source pane, the snippet edits the text at the insertion point
+    /// (see ``MarkdownSnippets``). In the rendered pane, it formats the
+    /// selection or inserts after the block being edited (see
+    /// ``PreviewController/insert(_:)``).
+    ///
+    /// - Parameter snippet: The structure to insert.
+    func insert(_ snippet: MarkdownSnippet) {
+        switch activePane {
+        case .source:
+            sourceEditor?.insert(snippet)
+        case .preview:
+            preview?.insert(snippet)
+        }
     }
 }

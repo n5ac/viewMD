@@ -86,8 +86,8 @@ final class LaunchUITests: XCTestCase {
 
         let viewMenu = app.menuBars.menuBarItems["View"]
         viewMenu.click()
-        let showItem = viewMenu.menuItems["Show Source"]
-        XCTAssertTrue(showItem.waitForExistence(timeout: 2), "View menu should offer Show Source")
+        let showItem = viewMenu.menuItems["Show/Hide Source"]
+        XCTAssertTrue(showItem.waitForExistence(timeout: 2), "View menu should offer Show/Hide Source")
         XCTAssertEqual(showItem.value(forKey: "isEnabled") as? Bool, true)
         app.typeKey(.escape, modifierFlags: [])
 

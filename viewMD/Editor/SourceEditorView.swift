@@ -133,6 +133,16 @@ final class SourceEditorController: NSObject, NSTextViewDelegate {
         onTextChange?(textView.string)
     }
 
+    /// Applies a quick-insert snippet at the insertion point (REQ-015) as
+    /// one undoable step, then focuses the editor.
+    ///
+    /// - Parameter snippet: The structure to insert.
+    func insert(_ snippet: MarkdownSnippet) {
+        let edit = MarkdownSnippets.edit(for: snippet, in: textView.string, selection: textView.selectedRange())
+        replace(edit.range, with: edit.replacement, selecting: edit.selection, actionName: snippet.title)
+        focus()
+    }
+
     /// Replaces the whole text without recording undo. Used when the view is
     /// first created.
     ///
@@ -176,7 +186,10 @@ struct SourceEditorView: NSViewRepresentable {
         controller.onTextChange = { newText in
             if text != newText { text = newText }
         }
-        controller.onFocus = { model.lastFocusedPane = .source }
+        controller.onFocus = {
+            model.lastFocusedPane = .source
+            model.becomeActive()
+        }
         model.sourceEditor = controller
         return scrollView
     }

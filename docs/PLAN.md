@@ -99,12 +99,18 @@ and any requirement that needs a decision.
   - Source syntax coloring (REQ-023) was pulled forward from Phase 6, and
     highlight.js 11.11.1 (BSD-3-Clause) is now bundled.
 
-### Phase 3: Quick-insert pull-downs
+### Phase 3: Quick-insert pull-downs (done 2026-11-14)
 - `MarkdownSnippets` engine for every REQ-015 structure, with wrap-selection behavior.
 - Toolbar pull-downs (Heading ▾, Format ▾, Lists ▾, Insert ▾), a matching
   Format menu, and standard shortcuts (⌘B, ⌘I, ⌘K).
 - **Done when:** each snippet has unit tests for an empty selection, a
   selection, and a document start or end.
+- Notes:
+  - Shortcuts: ⌘1–⌘6 headings, ⌘B bold, ⌘I italic, ⇧⌘X strikethrough,
+    ⇧⌘8 / ⇧⌘7 / ⇧⌘9 bulleted / numbered / task list, ⌘' quote, ⌘K link,
+    ⌥⌘S show/hide source.
+  - Menu commands target `EditorModel.active`, the window last worked in.
+    Shortcuts on SwiftUI `FocusedValue`-driven menu items never fired.
 
 ### Phase 4: Editing in the rendered pane (the hardest part, so it comes early)
 - `bridge.js`: makes top-level blocks `contenteditable` and posts

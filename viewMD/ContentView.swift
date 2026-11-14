@@ -52,18 +52,29 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: 640, minHeight: 400)
+        .background(WindowKeyObserver { model.becomeActive() })
         .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                SnippetMenu(title: "Heading", systemImage: "textformat.size", snippets: (1...6).map { .heading($0) }, model: model)
+                SnippetMenu(title: "Format", systemImage: "bold",
+                            snippets: [.bold, .italic, .strikethrough, .inlineCode], model: model)
+                SnippetMenu(title: "Lists", systemImage: "list.bullet",
+                            snippets: [.bulletList, .numberedList, .taskList, .blockquote], model: model)
+                SnippetMenu(title: "Insert", systemImage: "plus.square.on.square",
+                            snippets: [.link, .image, .codeBlock, .table, .horizontalRule], model: model)
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button(action: model.toggleSourcePane) {
                     Label(model.isSourceVisible ? "Hide Source" : "Show Source", systemImage: "sidebar.right")
                 }
-                .keyboardShortcut("s", modifiers: [.command, .option])
                 .help(model.isSourceVisible ? "Hide the Markdown source (⌥⌘S)" : "Show the Markdown source (⌥⌘S)")
                 .accessibilityIdentifier("toggle-source")
             }
         }
-        .focusedSceneValue(\.editorModel, model)
-        .onAppear { model.isSourceVisible = storedSourceVisible }
+        .onAppear {
+            model.isSourceVisible = storedSourceVisible
+            model.becomeActive()
+        }
         .onChange(of: model.isSourceVisible) { _, visible in
             storedSourceVisible = visible
             // Keep keyboard focus in the window when the pane it was in
@@ -90,6 +101,35 @@ struct ContentView: View {
     }
 }
 
+/// A toolbar pull-down that inserts Markdown structures (REQ-015).
+private struct SnippetMenu: View {
+    /// The menu's name (shown as its tooltip and in text-only toolbars).
+    let title: String
+    /// The menu's SF Symbol.
+    let systemImage: String
+    /// The items, in order.
+    let snippets: [MarkdownSnippet]
+    /// The window's editor state, which routes the insert to the focused pane.
+    let model: EditorModel
+
+    var body: some View {
+        Menu {
+            ForEach(snippets, id: \.self) { snippet in
+                Button {
+                    model.insert(snippet)
+                } label: {
+                    Label(snippet.title, systemImage: snippet.systemImage)
+                }
+                .accessibilityIdentifier("insert-\(snippet.title)")
+            }
+        } label: {
+            Label(title, systemImage: systemImage)
+        }
+        .help("Insert \(title.lowercased()) at the insertion point")
+        .accessibilityIdentifier("menu-\(title)")
+    }
+}
+
 /// A slim bar above the preview explaining that local images need folder
 /// access, with a button to grant it.
 private struct FolderAccessBanner: View {
@@ -110,21 +150,6 @@ private struct FolderAccessBanner: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .background(.bar)
-    }
-}
-
-// MARK: - Focused value
-
-/// Lets menu commands find the frontmost window's ``EditorModel``.
-struct EditorModelFocusedValueKey: FocusedValueKey {
-    typealias Value = EditorModel
-}
-
-extension FocusedValues {
-    /// The frontmost document window's editor state.
-    var editorModel: EditorModel? {
-        get { self[EditorModelFocusedValueKey.self] }
-        set { self[EditorModelFocusedValueKey.self] = newValue }
     }
 }
 

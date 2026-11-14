@@ -118,6 +118,12 @@ final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDel
         webView.load(URLRequest(url: PreviewURLs.pageURL))
     }
 
+    /// Inserts a snippet in the rendered pane. Editing in the rendered pane
+    /// arrives in Phase 4; until then, this does nothing.
+    ///
+    /// - Parameter snippet: The structure to insert.
+    func insert(_ snippet: MarkdownSnippet) {}
+
     /// Gives the web view keyboard focus.
     func focus() {
         webView.window?.makeFirstResponder(webView)
@@ -196,7 +202,10 @@ struct PreviewView: NSViewRepresentable {
 
     func makeNSView(context: Context) -> WKWebView {
         let controller = context.coordinator
-        controller.onFocus = { model.lastFocusedPane = .preview }
+        controller.onFocus = {
+            model.lastFocusedPane = .preview
+            model.becomeActive()
+        }
         controller.onAccessDenied = { model.needsFolderAccess = true }
         model.preview = controller
         controller.update(text: text, baseURL: baseURL)
