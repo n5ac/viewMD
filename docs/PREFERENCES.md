@@ -16,3 +16,4 @@ supersedes an older one, edit the older entry; don't keep contradictory entries.
 | P-008 | 2026-11-14 | Editing must work in **both** panes (rendered and source), each updating the other. | Owner chose this over source-only editing, knowing it's harder to build. |
 | P-009 | 2026-11-14 | The owner delegates technical choices (minimum OS, packages, Markdown dialect) to Claude's judgment: pick what makes the most sense, with the most common / Claude-style Markdown (GFM). | App definition. Still record each choice as a `Proposed` requirement for approval. |
 | P-010 | 2026-11-14 | Changing the Xcode template is fine where needed. | App definition. |
+| P-011 | 2026-11-14 | In user-facing documents, credit **Stephen Hicks, N5AC** for the idea and **Claude** for the code. | Requested for the install guide PDF. |

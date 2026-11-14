@@ -204,6 +204,9 @@ mark { background: var(--mark); color: inherit; }
      with backgrounds that print engines drop by default. */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .markdown-body { max-width: none; padding: 0; min-height: 0; }
+  /* On screen, tables scroll sideways (display: block). Paper can't
+     scroll, so lay them out as real tables that fit the page width. */
+  table { display: table; width: auto; max-width: 100%; }
   pre, blockquote, table, img, h1, h2, h3, h4, h5, h6 { break-inside: avoid; }
   h1, h2, h3, h4, h5, h6 { break-after: avoid; }
   a { color: var(--text); text-decoration: underline; }

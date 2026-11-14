@@ -2,6 +2,10 @@
 
 A quick, clean Markdown viewer and editor for macOS 15 and later, written in Swift.
 
+To install viewMD on another Mac and make it the default app for `.md`
+files, see the [installation guide](docs/INSTALL.md)
+([PDF](docs/viewMD-Install-Guide.pdf)).
+
 ## Features
 
 - **Two panes:** the rendered document on the left, the Markdown source on

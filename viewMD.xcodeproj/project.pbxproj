@@ -38,7 +38,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				viewMD.entitlements,
 			);
 			target = 4FD3945330A8BD1D0056E3A2 /* viewMD */;
 		};
@@ -230,19 +229,6 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXTargetDependency section */
-		4FD3947A30A8BD200056E3A2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4FD3945330A8BD1D0056E3A2 /* viewMD */;
-			targetProxy = 4FD3947930A8BD200056E3A2 /* PBXContainerItemProxy */;
-		};
-		4FD3948A30A8BD200056E3A2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4FD3945330A8BD1D0056E3A2 /* viewMD */;
-			targetProxy = 4FD3948930A8BD200056E3A2 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXResourcesBuildPhase section */
 		4FD3945230A8BD1D0056E3A2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -290,6 +276,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4FD3947A30A8BD200056E3A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4FD3945330A8BD1D0056E3A2 /* viewMD */;
+			targetProxy = 4FD3947930A8BD200056E3A2 /* PBXContainerItemProxy */;
+		};
+		4FD3948A30A8BD200056E3A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4FD3945330A8BD1D0056E3A2 /* viewMD */;
+			targetProxy = 4FD3948930A8BD200056E3A2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4FD3946230A8BD1F0056E3A2 /* Debug */ = {
@@ -486,7 +485,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/viewMD.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/viewMD";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2W638WZ22D;
@@ -499,6 +497,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/viewMD.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/viewMD";
 			};
 			name = Debug;
 		};
@@ -506,7 +505,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/viewMD.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/viewMD";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2W638WZ22D;
@@ -519,13 +517,13 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/viewMD.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/viewMD";
 			};
 			name = Release;
 		};
 		4FD3948730A8BD200056E3A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				TEST_TARGET_NAME = viewMD;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2W638WZ22D;
@@ -538,13 +536,13 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = viewMD;
 			};
 			name = Debug;
 		};
 		4FD3948830A8BD200056E3A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				TEST_TARGET_NAME = viewMD;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2W638WZ22D;
@@ -557,6 +555,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = viewMD;
 			};
 			name = Release;
 		};
