@@ -205,7 +205,12 @@ struct EditorModelTests {
     }
 }
 
-@Suite("Render performance")
+/// Timing checks for REQ-012. They run on the developer's Mac as part of the
+/// pre-commit suite. CI sets `VIEWMD_SKIP_PERF` (via `TEST_RUNNER_` in the
+/// workflow) because shared runners are several times slower and would fail
+/// for reasons that say nothing about the app.
+@Suite("Render performance", .disabled(if: ProcessInfo.processInfo.environment["VIEWMD_SKIP_PERF"] != nil,
+                                      "Timing checks are skipped on CI runners"))
 struct RenderPerformanceTests {
 
     /// A realistic 5,000-line document mixing every construct.

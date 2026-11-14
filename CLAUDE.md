@@ -45,7 +45,8 @@ say why before going further.
    - The command above runs both and is the gate before every commit. UI
      tests need a properly signed build, so they run locally; CI
      (`.github/workflows/ci.yml`) runs `viewMDTests` only, with ad-hoc
-     signing.
+     signing, and skips the render-timing suite (shared runners are too
+     slow for REQ-012's budget). Timing is checked locally.
    - After pushing, check that the CI run passed (`gh run list -L 1`).
 6. **Re-check requirements.** Confirm the finished change meets the
    requirement(s) it maps to and doesn't break any other requirement. Update

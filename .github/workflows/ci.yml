@@ -24,6 +24,11 @@ jobs:
       - name: Build and run unit tests
         # Ad-hoc signing (`-`): CI has no access to the developer's signing
         # certificate, and unit tests don't need one.
+        # TEST_RUNNER_VIEWMD_SKIP_PERF reaches the tests as VIEWMD_SKIP_PERF
+        # and skips the timing checks (REQ-012), which only hold on a
+        # developer Mac, not a shared runner.
+        env:
+          TEST_RUNNER_VIEWMD_SKIP_PERF: "1"
         run: |
           xcodebuild test \
             -project viewMD.xcodeproj \
