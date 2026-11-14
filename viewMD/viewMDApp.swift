@@ -7,10 +7,12 @@
 
 import SwiftUI
 
+/// The viewMD application: a document-based app with one window per
+/// Markdown file (REQ-010).
 @main
 struct viewMDApp: App {
     var body: some Scene {
-        DocumentGroup(newDocument: viewMDDocument()) { file in
+        DocumentGroup(newDocument: MarkdownDocument()) { file in
             ContentView(document: file.$document)
         }
     }

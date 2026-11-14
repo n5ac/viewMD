@@ -58,13 +58,13 @@ views of it.
 Each phase ends with a check-in: what was built, test results, a screenshot,
 and any requirement that needs a decision.
 
-### Phase 0: Foundation
+### Phase 0: Foundation (done 2026-11-14)
 - Set the deployment target to macOS 15.0 (REQ-004).
 - Replace the template's document type with `MarkdownDocument` and register
   `net.daringfireball.markdown` plus plain text in `Info.plist` (REQ-010).
-- Add the `viewMDTests` unit-test target (Swift Testing) and a UI-test target (REQ-002).
+- Add the `viewMDTests` unit-test target (Swift Testing) and the `viewMDUITests` UI-test target, plus a shared `viewMD` scheme (REQ-002).
 - Add the `swift-markdown` package (REQ-006).
-- Add a GitHub Actions workflow for build and test on push/PR (REQ-008).
+- Add a GitHub Actions workflow for build and test on push/PR (REQ-008). CI runs unit tests only; an ad-hoc-signed UI-test runner hangs without automation permission, so UI tests run locally.
 - **Done when:** the app opens and saves `.md` files, `xcodebuild test` passes
   locally and in CI.
 

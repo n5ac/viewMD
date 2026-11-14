@@ -1,0 +1,35 @@
+# Builds viewMD and runs the unit tests on every push and pull request
+# (REQ-008).
+#
+# UI tests (viewMDUITests) are not run here: an ad-hoc-signed UI-test runner
+# can't get macOS automation permission on a headless runner, so they run
+# locally with the developer's signing team instead (see CLAUDE.md).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build and run unit tests
+        # Ad-hoc signing (`-`): CI has no access to the developer's signing
+        # certificate, and unit tests don't need one.
+        run: |
+          xcodebuild test \
+            -project viewMD.xcodeproj \
+            -scheme viewMD \
+            -destination 'platform=macOS' \
+            -only-testing:viewMDTests \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY=- \
+            DEVELOPMENT_TEAM=

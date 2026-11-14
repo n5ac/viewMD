@@ -40,6 +40,13 @@ say why before going further.
    ```
    Never commit with failing tests or a failing build. Never disable or delete
    a test to make the suite pass without the owner's approval.
+   - Test targets: `viewMDTests` (unit tests, Swift Testing) and
+     `viewMDUITests` (UI tests, XCTest/XCUIApplication).
+   - The command above runs both and is the gate before every commit. UI
+     tests need a properly signed build, so they run locally; CI
+     (`.github/workflows/ci.yml`) runs `viewMDTests` only, with ad-hoc
+     signing.
+   - After pushing, check that the CI run passed (`gh run list -L 1`).
 6. **Re-check requirements.** Confirm the finished change meets the
    requirement(s) it maps to and doesn't break any other requirement. Update
    the requirement's status in `docs/REQUIREMENTS.md` if it changed.
