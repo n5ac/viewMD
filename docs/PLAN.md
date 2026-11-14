@@ -178,3 +178,12 @@ and any requirement that needs a decision.
 | The caret jumps while typing in the preview. | Never replace the DOM of the block being edited; only patch the others. |
 | Some blocks are awkward to edit as rich text (tables, code blocks). | Code blocks are edited as plain text. Table cells are edited one cell at a time, and the table structure changes only through the source pane or the pull-downs. |
 | CI runners lag behind the local Xcode 26.6. | Pin the runner image and Xcode version in the workflow; check this in Phase 0. |
+
+## Releases
+
+| Version | Date | Channel | Notes |
+|---------|------|---------|-------|
+| 0.1 (1) | 2026-11-14 | TestFlight external group **Alpha** (Ed Gonzalez); internal group **viewMD Team** | First alpha. App Store Connect app "viewMD – Markdown Editor" (the name "viewMD" was taken), bundle ID `com.n5ac.viewMD`, SKU `viewMD-mac`. Submitted for Beta App Review. |
+
+**How a release is made:** bump `CURRENT_PROJECT_VERSION` (the build number must increase for every upload), run the full test suite, then `xcodebuild archive -scheme viewMD -configuration Release -archivePath <path>.xcarchive -allowProvisioningUpdates`, then `xcodebuild -exportArchive` with an ExportOptions plist containing `method = app-store-connect` and `destination = upload`. Add the build to the TestFlight group in App Store Connect.
+
