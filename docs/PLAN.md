@@ -68,12 +68,18 @@ and any requirement that needs a decision.
 - **Done when:** the app opens and saves `.md` files, `xcodebuild test` passes
   locally and in CI.
 
-### Phase 1: Rendering core (no UI)
+### Phase 1: Rendering core, no UI (done 2026-11-14)
 - `MarkdownRenderer` covering all GFM constructs, with `data-src` line tags (REQ-016).
 - `HTMLSanitizer` (REQ-007).
 - Relative-URL resolution against the document's folder (REQ-022).
 - **Done when:** unit tests cover every GFM construct and the sanitizer
   rejects known script-injection cases.
+- Notes:
+  - swift-markdown doesn't enable cmark-gfm's autolink extension or report
+    whether a list is tight, so viewMD implements both (`Autolinker`, and
+    `isTight` in the renderer).
+  - GFM footnotes aren't supported by swift-markdown and aren't rendered;
+    they're outside REQ-016's list.
 
 ### Phase 2: Two-pane window with live one-way updates
 - Split window: preview on the left, source on the right (REQ-011, P-006).

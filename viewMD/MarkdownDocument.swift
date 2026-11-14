@@ -14,7 +14,9 @@ extension UTType {
     ///
     /// Declared as an imported type in `Info.plist` so the app works whether
     /// or not another app on the system has already declared it.
-    static let markdown = UTType(importedAs: "net.daringfireball.markdown", conformingTo: .plainText)
+    /// `nonisolated` because the app target defaults to main-actor isolation
+    /// and the nonisolated document type reads it.
+    nonisolated static let markdown = UTType(importedAs: "net.daringfireball.markdown", conformingTo: .plainText)
 }
 
 /// A Markdown file opened in a viewMD window.
