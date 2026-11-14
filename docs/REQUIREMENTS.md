@@ -31,7 +31,7 @@ owner's approval.
 | REQ-013 | Editing text in the rendered pane updates the Markdown source automatically. Only the Markdown of the edited block is rewritten; the rest of the source stays byte-for-byte unchanged. | Must | Done | `PreviewEditingTests` (round trips, splicing, byte-for-byte preservation); `PreviewEditingUITests` |
 | REQ-014 | The user can hide and show the source pane (toolbar button, View menu item and keyboard shortcut). When it's hidden, the rendered view fills the window. | Must | Done | `LaunchUITests.testToggleSourcePane`; `EditorModelTests` |
 | REQ-015 | Quick pull-down menus insert common Markdown structures at the current insertion point: headings (H1–H6), bold, italic, strikethrough, inline code, code block, link, image, bulleted / numbered / task list, block quote, table and horizontal rule. If text is selected, it is wrapped where that makes sense (e.g. selection → **bold**). Works in whichever pane has focus. | Must | Done | `MarkdownSnippetsTests`; `SnippetUITests`; `PreviewEditingUITests` (⌘B and Insert ▸ Table in the rendered pane) |
-| REQ-016 | The Markdown dialect is GitHub Flavored Markdown (GFM): CommonMark plus tables, task lists, strikethrough and autolinks. This is the most common dialect and the one Claude writes. | Must | In progress | `MarkdownRendererTests` (block, inline, autolink suites) |
+| REQ-016 | The Markdown dialect is GitHub Flavored Markdown (GFM): CommonMark plus tables, task lists, strikethrough and autolinks. This is the most common dialect and the one Claude writes. | Must | Done | `MarkdownRendererTests`; used by preview and exports (GFM footnotes not supported by swift-markdown) |
 | REQ-017 | The user can export the document to **HTML** (a standalone file with styles embedded) on demand, choosing where to save it. | Must | Done | `HTMLExportTests`; `ExportUITests` |
 | REQ-018 | The user can export the document to **PDF** (paginated, matching the rendered view) on demand, choosing where to save it. | Must | Done | `PDFExportTests` (PDFKit: pagination and text); `ExportUITests` |
 | REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | Done | `CodeHighlighterTests`, `HTMLExportTests.codeHighlighted`; preview highlights with the same library |
@@ -68,3 +68,4 @@ owner's approval.
 | 2026-11-14 | Phase 4: editing in the rendered pane. REQ-013 and REQ-015 Done; REQ-010 Done (open/save/undo verified). |
 | 2026-11-14 | Phase 5: HTML and PDF export. REQ-017, REQ-018, REQ-019 and REQ-021 Done. |
 | 2026-11-14 | Phase 6: scroll sync, app icon, README features and shortcuts. All requirements Done. |
+| 2026-11-14 | REQ-016 marked Done (left In progress by mistake after Phase 2). |
