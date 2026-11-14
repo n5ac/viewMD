@@ -356,8 +356,13 @@
 
   // MARK: Scroll sync (REQ-020)
 
+  /** Reported instead of a line when the pane is scrolled to the very end. */
+  const END_OF_DOCUMENT = 2147483647;
+
   /** The source line at the top of the visible area. */
   function topVisibleLine() {
+    const scroller = document.scrollingElement;
+    if (scroller.scrollTop > 0 && scroller.scrollTop + window.innerHeight >= scroller.scrollHeight - 2) return END_OF_DOCUMENT;
     for (const entry of entries) {
       const rect = entry.nodes[0] && entry.nodes[0].getBoundingClientRect();
       if (rect && rect.bottom > 0) {
@@ -370,8 +375,18 @@
     return entries.length ? entries.at(-1).end : 1;
   }
 
-  /** Scrolls so the given source line is at the top. */
+  /** Scrolls so the given source line is at the top (past the last block: to the end). */
   function scrollToLine(line) {
+    const lastEnd = entries.length ? entries.at(-1).end : 0;
+    const firstStart = entries.length ? entries[0].start : 1;
+    if (line > lastEnd || line <= firstStart) {
+      // Past the end: go to the end. At or before the first block: go to
+      // the very top (including the page's top padding).
+      suppressScrollReport = true;
+      window.scrollTo({ top: line > lastEnd ? document.scrollingElement.scrollHeight : 0 });
+      requestAnimationFrame(() => { suppressScrollReport = false; });
+      return;
+    }
     const entry = entries.find((candidate) => candidate.end >= line && candidate.start <= Math.max(line, candidate.start)) || entries.at(-1);
     if (!entry || !entry.nodes[0]) return;
     const rect = entry.nodes[0].getBoundingClientRect();

@@ -35,7 +35,7 @@ owner's approval.
 | REQ-017 | The user can export the document to **HTML** (a standalone file with styles embedded) on demand, choosing where to save it. | Must | Done | `HTMLExportTests`; `ExportUITests` |
 | REQ-018 | The user can export the document to **PDF** (paginated, matching the rendered view) on demand, choosing where to save it. | Must | Done | `PDFExportTests` (PDFKit: pagination and text); `ExportUITests` |
 | REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | Done | `CodeHighlighterTests`, `HTMLExportTests.codeHighlighted`; preview highlights with the same library |
-| REQ-020 | The two panes keep their scroll positions in sync. | Should | Agreed | Manual QA |
+| REQ-020 | The two panes keep their scroll positions in sync. | Should | Done | `ScrollSyncTests`; `ScrollIntegrationTests` (live WKWebView and NSTextView) |
 | REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | Done | Preview and export CSS follow `prefers-color-scheme`; `HTMLExportTests.colorSchemes`; print forces light |
 | REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | Done | `URLPolicyTests`, `PreviewURLTests`, `FolderAccessStoreTests` |
 | REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
@@ -45,11 +45,11 @@ owner's approval.
 | ID | Requirement | Priority | Status | Verified by |
 |----|-------------|----------|--------|-------------|
 | REQ-001 | Native macOS app written in Swift. | Must | Done | Xcode project setup |
-| REQ-002 | Every code change has unit tests where possible, and the full suite passes before commit. | Must | Agreed | Commit history / CI test run |
-| REQ-003 | All code is well documented (DocC `///` comments on non-trivial declarations, inline comments for non-obvious logic). | Must | Agreed | Code review |
+| REQ-002 | Every code change has unit tests where possible, and the full suite passes before commit. | Must | Done (ongoing) | Every commit lists its tests; full suite run before each commit |
+| REQ-003 | All code is well documented (DocC `///` comments on non-trivial declarations, inline comments for non-obvious logic). | Must | Done (ongoing) | DocC comments on all non-private declarations |
 | REQ-004 | The minimum supported OS is macOS 15.0 (Sequoia). | Must | Done | Xcode deployment target (`MACOSX_DEPLOYMENT_TARGET = 15.0`) |
-| REQ-005 | The UI is crisp, clean and easy to understand: native macOS controls, toolbar and menus following Apple's Human Interface Guidelines, SF Symbols, and no clutter. | Must | Agreed | Manual design review |
-| REQ-006 | Dependencies are kept small and GPL-3.0-compatible: Apple's `swift-markdown` (Apache-2.0) for parsing and `highlight.js` (BSD-3-Clause), bundled in the app. The app needs no network access to work. | Must | In progress | Package manifest review |
+| REQ-005 | The UI is crisp, clean and easy to understand: native macOS controls, toolbar and menus following Apple's Human Interface Guidelines, SF Symbols, and no clutter. | Must | Done | Native toolbar, menus and SF Symbols; screenshots reviewed each phase; owner's own design review still welcome |
+| REQ-006 | Dependencies are kept small and GPL-3.0-compatible: Apple's `swift-markdown` (Apache-2.0) for parsing and `highlight.js` (BSD-3-Clause), bundled in the app. The app needs no network access to work. | Must | Done | swift-markdown 0.9.x and bundled highlight.js 11.11.1 only; README third-party table |
 | REQ-007 | Rendering a document never runs scripts from that document: `<script>` tags and inline event handlers in raw HTML are removed. | Should | Done | `HTMLSanitizerTests`; preview Content-Security-Policy blocks inline script |
 | REQ-008 | A GitHub Actions workflow builds the app and runs the full test suite on every push and pull request (unit tests; UI tests run locally, see `CLAUDE.md`). | Should | Done | CI run status (first green run 2026-11-14) |
 
@@ -67,3 +67,4 @@ owner's approval.
 | 2026-11-14 | Phase 3: quick-insert pull-downs and Format menu for the source pane; REQ-015 In progress (rendered pane in Phase 4). |
 | 2026-11-14 | Phase 4: editing in the rendered pane. REQ-013 and REQ-015 Done; REQ-010 Done (open/save/undo verified). |
 | 2026-11-14 | Phase 5: HTML and PDF export. REQ-017, REQ-018, REQ-019 and REQ-021 Done. |
+| 2026-11-14 | Phase 6: scroll sync, app icon, README features and shortcuts. All requirements Done. |

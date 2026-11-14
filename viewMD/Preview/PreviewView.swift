@@ -314,6 +314,7 @@ struct PreviewView: NSViewRepresentable {
             model.becomeActive()
         }
         controller.onAccessDenied = { model.needsFolderAccess = true }
+        controller.onScroll = { line in model.paneDidScroll(.preview, toLine: line) }
         model.preview = controller
         controller.update(text: text, baseURL: baseURL)
         return controller.webView

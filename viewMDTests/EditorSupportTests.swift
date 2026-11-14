@@ -262,3 +262,43 @@ struct RenderPerformanceTests {
         #expect(elapsed < .milliseconds(100), "Highlighting took \(elapsed)")
     }
 }
+
+@Suite("Scroll sync")
+@MainActor
+struct ScrollSyncTests {
+
+    @Test("Line numbers and offsets convert both ways", arguments: [
+        ("", 0, 1), ("a\nb\nc", 0, 1), ("a\nb\nc", 2, 2), ("a\nb\nc", 4, 3), ("a\nb\nc", 99, 3), ("é\n👍\nx", 5, 3),
+    ])
+    func lineAtOffset(text: String, offset: Int, line: Int) {
+        #expect(LineIndex.line(atUTF16Offset: offset, in: text) == line)
+    }
+
+    @Test("Line start offsets", arguments: [
+        ("a\nbb\nccc", 1, 0), ("a\nbb\nccc", 2, 2), ("a\nbb\nccc", 3, 5), ("a\nbb\nccc", 9, 8), ("a\nbb\nccc", 0, 0),
+    ])
+    func offsetOfLine(text: String, line: Int, offset: Int) {
+        #expect(LineIndex.utf16Offset(ofLine: line, in: text) == offset)
+    }
+
+    @Test("A user scroll drives the other pane, and its echo is ignored")
+    func echoSuppressed() {
+        var clock = Date(timeIntervalSince1970: 0)
+        let sync = ScrollSync()
+        sync.now = { clock }
+        #expect(sync.paneDidScroll(.source, toLine: 40) == 40)
+        // The preview's report of the scroll we just caused is ignored…
+        #expect(sync.paneDidScroll(.preview, toLine: 39) == nil)
+        // …while the source can keep driving.
+        #expect(sync.paneDidScroll(.source, toLine: 50) == 50)
+        // After the echo window, the preview can drive again.
+        clock = clock.addingTimeInterval(ScrollSync.echoWindow + 0.01)
+        #expect(sync.paneDidScroll(.preview, toLine: 10) == 10)
+        #expect(sync.paneDidScroll(.source, toLine: 11) == nil)
+    }
+
+    @Test("Lines are never below 1")
+    func clamped() {
+        #expect(ScrollSync().paneDidScroll(.source, toLine: 0) == 1)
+    }
+}

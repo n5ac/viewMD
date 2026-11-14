@@ -10,7 +10,7 @@ import Foundation
 import Observation
 
 /// Which pane an action or edit applies to.
-enum EditorPane: Equatable, Sendable {
+nonisolated enum EditorPane: Hashable, Sendable {
     /// The rendered Markdown (left).
     case preview
     /// The Markdown source (right).
@@ -63,6 +63,22 @@ final class EditorModel {
     /// Makes this window's model the target of menu commands.
     func becomeActive() {
         Self.active = self
+    }
+
+    /// Keeps the panes' scroll positions together (REQ-020).
+    @ObservationIgnored let scrollSync = ScrollSync()
+
+    /// Reports that a pane scrolled, and scrolls the other pane to match.
+    ///
+    /// - Parameters:
+    ///   - pane: The pane that scrolled.
+    ///   - line: The 1-based source line at its top.
+    func paneDidScroll(_ pane: EditorPane, toLine line: Int) {
+        guard isSourceVisible, let target = scrollSync.paneDidScroll(pane, toLine: line) else { return }
+        switch pane {
+        case .source: preview?.scroll(toLine: target)
+        case .preview: sourceEditor?.scroll(toLine: target)
+        }
     }
 
     /// Shows or hides the source pane.

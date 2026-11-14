@@ -40,6 +40,10 @@ final class SourceEditorController: NSObject, NSTextViewDelegate, NSTextStorageD
     /// Called when the text view gains focus.
     var onFocus: (() -> Void)?
 
+    /// Called with the source line at the top of the pane when it scrolls
+    /// (REQ-020).
+    var onScroll: ((Int) -> Void)?
+
     /// Applies syntax coloring after each change (REQ-023).
     private let highlighter = MarkdownHighlighter()
 
@@ -53,21 +57,33 @@ final class SourceEditorController: NSObject, NSTextViewDelegate, NSTextStorageD
     ///
     /// - Returns: The scroll view containing the text view.
     func makeScrollView() -> NSScrollView {
-        let scrollView = NSTextView.scrollableTextView()
+        let scrollView = NSScrollView()
         scrollView.borderType = .noBorder
         scrollView.hasVerticalScroller = true
         scrollView.autohidesScrollers = true
+        scrollView.drawsBackground = false
 
-        // Swap the stock text view for our focus-reporting subclass, reusing
-        // the text container set up by scrollableTextView().
-        let stock = scrollView.documentView as! NSTextView
-        let textView = FocusReportingTextView(frame: stock.frame, textContainer: stock.textContainer)
-        textView.autoresizingMask = stock.autoresizingMask
-        textView.minSize = stock.minSize
-        textView.maxSize = stock.maxSize
+        // An explicit TextKit 1 stack: scroll sync (REQ-020) maps lines to
+        // positions with NSLayoutManager, and building the stack directly
+        // avoids a mid-life switch from TextKit 2.
+        let storage = NSTextStorage()
+        let layoutManager = NSLayoutManager()
+        storage.addLayoutManager(layoutManager)
+        let container = NSTextContainer(size: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
+        container.widthTracksTextView = true
+        layoutManager.addTextContainer(container)
+        let textView = FocusReportingTextView(frame: .zero, textContainer: container)
+        textView.autoresizingMask = [.width]
+        textView.minSize = NSSize(width: 0, height: 0)
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.isVerticallyResizable = true
         textView.isHorizontallyResizable = false
         scrollView.documentView = textView
+
+        // Report scrolling for scroll sync.
+        scrollView.contentView.postsBoundsChangedNotifications = true
+        NotificationCenter.default.addObserver(self, selector: #selector(visibleRegionDidChange),
+                                               name: NSView.boundsDidChangeNotification, object: scrollView.contentView)
 
         textView.font = MarkdownHighlighter.baseFont
         textView.textColor = .textColor
@@ -155,6 +171,45 @@ final class SourceEditorController: NSObject, NSTextViewDelegate, NSTextStorageD
         isApplyingExternalChange = false
     }
 
+    /// Reported instead of a line when the pane is scrolled to the very
+    /// end, so the other pane goes to its end too.
+    static let endOfDocument = Int(Int32.max)
+
+    /// The 1-based source line at the top of the visible area, or
+    /// ``endOfDocument`` when scrolled to the end.
+    var topVisibleLine: Int {
+        if let clip = textView.enclosingScrollView?.contentView, clip.bounds.minY > 0,
+           clip.bounds.maxY >= textView.frame.height - 2 {
+            return Self.endOfDocument
+        }
+        guard let layoutManager = textView.layoutManager, let container = textView.textContainer else { return 1 }
+        let visible = textView.visibleRect
+        let point = NSPoint(x: visible.minX + 1, y: visible.minY - textView.textContainerOrigin.y + 1)
+        let glyph = layoutManager.glyphIndex(for: point, in: container)
+        let character = layoutManager.characterIndexForGlyph(at: glyph)
+        return LineIndex.line(atUTF16Offset: character, in: textView.string)
+    }
+
+    /// Scrolls so a source line is at the top of the pane (REQ-020).
+    ///
+    /// - Parameter line: A 1-based source line.
+    func scroll(toLine line: Int) {
+        guard let layoutManager = textView.layoutManager, let container = textView.textContainer,
+              let scrollView = textView.enclosingScrollView else { return }
+        let offset = LineIndex.utf16Offset(ofLine: line, in: textView.string)
+        layoutManager.ensureLayout(for: container)
+        let glyphs = layoutManager.glyphRange(forCharacterRange: NSRange(location: offset, length: 0), actualCharacterRange: nil)
+        let rect = layoutManager.lineFragmentRect(forGlyphAt: min(glyphs.location, max(0, layoutManager.numberOfGlyphs - 1)), effectiveRange: nil)
+        let y = max(0, rect.minY + textView.textContainerOrigin.y - textView.textContainerInset.height)
+        let maxY = max(0, textView.frame.height - scrollView.contentView.bounds.height)
+        scrollView.contentView.scroll(to: NSPoint(x: 0, y: min(y, maxY)))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    @objc private func visibleRegionDidChange(_ notification: Notification) {
+        onScroll?(topVisibleLine)
+    }
+
     /// Gives the text view keyboard focus.
     func focus() {
         textView.window?.makeFirstResponder(textView)
@@ -222,6 +277,7 @@ struct SourceEditorView: NSViewRepresentable {
             model.lastFocusedPane = .source
             model.becomeActive()
         }
+        controller.onScroll = { line in model.paneDidScroll(.source, toLine: line) }
         model.sourceEditor = controller
         return scrollView
     }
