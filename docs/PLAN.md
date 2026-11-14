@@ -139,10 +139,19 @@ and any requirement that needs a decision.
   - In the rendered pane, ⌘-click opens a link; a plain click places the
     caret.
 
-### Phase 5: Export
+### Phase 5: Export (done 2026-11-14)
 - File ▸ Export ▸ HTML… / PDF…, with a save panel (REQ-017, REQ-018). The toolbar Export ▾ mirrors it.
 - **Done when:** the HTML export is a single self-contained file (tested), and
   the PDF export is paginated and correct (checked with PDFKit in an integration test).
+- Notes:
+  - Shortcuts: ⇧⌘E exports HTML, ⇧⌘P exports PDF. The toolbar Export
+    pull-down mirrors them.
+  - HTML export is script-free. Code is pre-highlighted by running the
+    bundled highlight.js in JavaScriptCore, and relative paths are kept as
+    written, so save the file next to the document to keep its images.
+  - PDF export prints the same HTML from an off-screen WKWebView, using
+    the user's default paper with 0.6-inch margins. `@media print` forces
+    light colors and keeps backgrounds (`print-color-adjust: exact`).
 
 ### Phase 6: Polish
 - Code-block highlighting (REQ-019), scroll sync (REQ-020), source syntax coloring (REQ-023).

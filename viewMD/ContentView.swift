@@ -63,6 +63,17 @@ struct ContentView: View {
                 SnippetMenu(title: "Insert", systemImage: "plus.square.on.square",
                             snippets: [.link, .image, .codeBlock, .table, .horizontalRule], model: model)
             }
+            ToolbarItem(placement: .automatic) {
+                Menu {
+                    ForEach(ExportFormat.allCases, id: \.self) { format in
+                        Button(format.menuTitle) { model.export(format) }
+                    }
+                } label: {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                }
+                .help("Export as HTML or PDF")
+                .accessibilityIdentifier("menu-Export")
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button(action: model.toggleSourcePane) {
                     Label(model.isSourceVisible ? "Hide Source" : "Show Source", systemImage: "sidebar.right")
@@ -74,6 +85,15 @@ struct ContentView: View {
         .onAppear {
             model.isSourceVisible = storedSourceVisible
             model.becomeActive()
+        }
+        .onChange(of: document.text, initial: true) { _, _ in
+            // Refresh the export closure so it captures the current text.
+            let markdown = document.text
+            let url = fileURL
+            model.exportHandler = { [weak model] format in
+                ExportController.export(format, markdown: markdown, fileURL: url,
+                                        window: model?.preview?.webView.window)
+            }
         }
         .onChange(of: model.isSourceVisible) { _, visible in
             storedSourceVisible = visible

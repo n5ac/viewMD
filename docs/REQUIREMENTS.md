@@ -32,11 +32,11 @@ owner's approval.
 | REQ-014 | The user can hide and show the source pane (toolbar button, View menu item and keyboard shortcut). When it's hidden, the rendered view fills the window. | Must | Done | `LaunchUITests.testToggleSourcePane`; `EditorModelTests` |
 | REQ-015 | Quick pull-down menus insert common Markdown structures at the current insertion point: headings (H1–H6), bold, italic, strikethrough, inline code, code block, link, image, bulleted / numbered / task list, block quote, table and horizontal rule. If text is selected, it is wrapped where that makes sense (e.g. selection → **bold**). Works in whichever pane has focus. | Must | Done | `MarkdownSnippetsTests`; `SnippetUITests`; `PreviewEditingUITests` (⌘B and Insert ▸ Table in the rendered pane) |
 | REQ-016 | The Markdown dialect is GitHub Flavored Markdown (GFM): CommonMark plus tables, task lists, strikethrough and autolinks. This is the most common dialect and the one Claude writes. | Must | In progress | `MarkdownRendererTests` (block, inline, autolink suites) |
-| REQ-017 | The user can export the document to **HTML** (a standalone file with styles embedded) on demand, choosing where to save it. | Must | Agreed | HTML exporter unit tests |
-| REQ-018 | The user can export the document to **PDF** (paginated, matching the rendered view) on demand, choosing where to save it. | Must | Agreed | PDF export integration test (PDFKit page check) |
-| REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | In progress | Manual QA |
+| REQ-017 | The user can export the document to **HTML** (a standalone file with styles embedded) on demand, choosing where to save it. | Must | Done | `HTMLExportTests`; `ExportUITests` |
+| REQ-018 | The user can export the document to **PDF** (paginated, matching the rendered view) on demand, choosing where to save it. | Must | Done | `PDFExportTests` (PDFKit: pagination and text); `ExportUITests` |
+| REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | Done | `CodeHighlighterTests`, `HTMLExportTests.codeHighlighted`; preview highlights with the same library |
 | REQ-020 | The two panes keep their scroll positions in sync. | Should | Agreed | Manual QA |
-| REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | In progress | Preview CSS and source colors adapt; exports in Phase 5 |
+| REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | Done | Preview and export CSS follow `prefers-color-scheme`; `HTMLExportTests.colorSchemes`; print forces light |
 | REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | Done | `URLPolicyTests`, `PreviewURLTests`, `FolderAccessStoreTests` |
 | REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
 
@@ -66,3 +66,4 @@ owner's approval.
 | 2026-11-14 | Phase 2: two-pane window. REQ-007, REQ-011, REQ-012, REQ-014, REQ-022 and REQ-023 Done; REQ-019 and REQ-021 In progress. |
 | 2026-11-14 | Phase 3: quick-insert pull-downs and Format menu for the source pane; REQ-015 In progress (rendered pane in Phase 4). |
 | 2026-11-14 | Phase 4: editing in the rendered pane. REQ-013 and REQ-015 Done; REQ-010 Done (open/save/undo verified). |
+| 2026-11-14 | Phase 5: HTML and PDF export. REQ-017, REQ-018, REQ-019 and REQ-021 Done. |

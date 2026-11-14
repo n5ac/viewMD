@@ -16,8 +16,22 @@ struct viewMDApp: App {
             ContentView(document: file.$document, fileURL: file.fileURL)
         }
         .commands {
+            ExportCommands()
             ViewCommands()
             FormatCommands()
+        }
+    }
+}
+
+/// File menu export items (REQ-017, REQ-018), after Save.
+struct ExportCommands: Commands {
+    var body: some Commands {
+        CommandGroup(after: .saveItem) {
+            Divider()
+            Button(ExportFormat.html.menuTitle) { EditorModel.active?.export(.html) }
+                .keyboardShortcut("e", modifiers: [.command, .shift])
+            Button(ExportFormat.pdf.menuTitle) { EditorModel.active?.export(.pdf) }
+                .keyboardShortcut("p", modifiers: [.command, .shift])
         }
     }
 }

@@ -70,6 +70,17 @@ final class EditorModel {
         isSourceVisible.toggle()
     }
 
+    /// Exports the window's document; set by `ContentView`, which owns the
+    /// document (REQ-017, REQ-018).
+    @ObservationIgnored var exportHandler: ((ExportFormat) -> Void)?
+
+    /// Exports the document in the given format, asking where to save.
+    ///
+    /// - Parameter format: HTML or PDF.
+    func export(_ format: ExportFormat) {
+        exportHandler?(format)
+    }
+
     /// Inserts a Markdown structure in the active pane (REQ-015).
     ///
     /// In the source pane, the snippet edits the text at the insertion point
