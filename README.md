@@ -16,6 +16,7 @@ xcodebuild test  -project viewMD.xcodeproj -scheme viewMD -destination 'platform
 - [`CLAUDE.md`](CLAUDE.md): the development workflow and rules
 - [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md): agreed requirements
 - [`docs/PREFERENCES.md`](docs/PREFERENCES.md): the owner's recorded preferences
+- [`docs/PLAN.md`](docs/PLAN.md): architecture and phased build plan
 
 ## License
 
