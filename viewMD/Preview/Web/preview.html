@@ -1,0 +1,26 @@
+<!doctype html>
+<!--
+  viewMD preview page. Loaded once per window from viewmd://app/preview.html;
+  bridge.js then patches #content as the document changes.
+
+  The Content-Security-Policy allows scripts only from this app's own origin,
+  so <script> tags and inline event handlers in a document never run, even if
+  one got past HTMLSanitizer (REQ-007). Images may come from the document's
+  folder (viewmd://doc/…), data: URLs or the web.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' viewmd://app; style-src 'self' viewmd://app 'unsafe-inline'; img-src viewmd: data: https: http:; media-src viewmd: https: http:; font-src 'self' viewmd://app">
+<meta name="color-scheme" content="light dark">
+<title>Preview</title>
+<link rel="stylesheet" href="preview.css">
+<link rel="stylesheet" href="highlight-github.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="highlight-github-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<article id="content" class="markdown-body" aria-label="Rendered Markdown"></article>
+<script src="highlight.min.js"></script>
+<script src="bridge.js"></script>
+</body>
+</html>

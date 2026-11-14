@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Entitlements not covered by build settings. App Sandbox, user-selected file
+  access and outgoing network connections are set in the target's build
+  settings (ENABLE_APP_SANDBOX, ENABLE_USER_SELECTED_FILES,
+  ENABLE_OUTGOING_NETWORK_CONNECTIONS) and merged with this file.
+-->
+<plist version="1.0">
+<dict>
+	<!-- Persist access to folders the user grants so local images show (REQ-022). -->
+	<key>com.apple.security.files.bookmarks.app-scope</key>
+	<true/>
+</dict>
+</plist>

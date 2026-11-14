@@ -26,19 +26,19 @@ owner's approval.
 | ID | Requirement | Priority | Status | Verified by |
 |----|-------------|----------|--------|-------------|
 | REQ-010 | viewMD is a quick, easy Markdown viewer **and** editor: a document-based app that creates, opens, edits and saves `.md` / `.markdown` files (plain text also opens), with standard macOS autosave, undo and multiple windows. | Must | In progress | Document read/write unit tests; manual QA |
-| REQ-011 | Each window has two panes: the **rendered** Markdown on the **left**, the Markdown **source** on the **right**. | Must | Agreed | UI test; manual QA |
-| REQ-012 | Editing the source pane updates the rendered pane automatically as you type (target: under 150 ms for documents up to 5,000 lines). | Must | Agreed | Renderer unit tests; performance test |
+| REQ-011 | Each window has two panes: the **rendered** Markdown on the **left**, the Markdown **source** on the **right**. | Must | Done | `LaunchUITests.testNewDocumentShowsTwoPanes` |
+| REQ-012 | Editing the source pane updates the rendered pane automatically as you type (target: under 150 ms for documents up to 5,000 lines). | Must | Done | `LaunchUITests.testTypingUpdatesPreview`; `RenderPerformanceTests` |
 | REQ-013 | Editing text in the rendered pane updates the Markdown source automatically. Only the Markdown of the edited block is rewritten; the rest of the source stays byte-for-byte unchanged. | Must | In progress | HTML→Markdown and splice unit tests; round-trip tests |
-| REQ-014 | The user can hide and show the source pane (toolbar button, View menu item and keyboard shortcut). When it's hidden, the rendered view fills the window. | Must | Agreed | UI test; manual QA |
+| REQ-014 | The user can hide and show the source pane (toolbar button, View menu item and keyboard shortcut). When it's hidden, the rendered view fills the window. | Must | Done | `LaunchUITests.testToggleSourcePane`; `EditorModelTests` |
 | REQ-015 | Quick pull-down menus insert common Markdown structures at the current insertion point: headings (H1–H6), bold, italic, strikethrough, inline code, code block, link, image, bulleted / numbered / task list, block quote, table and horizontal rule. If text is selected, it is wrapped where that makes sense (e.g. selection → **bold**). Works in whichever pane has focus. | Must | Agreed | Snippet-engine unit tests; manual QA |
 | REQ-016 | The Markdown dialect is GitHub Flavored Markdown (GFM): CommonMark plus tables, task lists, strikethrough and autolinks. This is the most common dialect and the one Claude writes. | Must | In progress | `MarkdownRendererTests` (block, inline, autolink suites) |
 | REQ-017 | The user can export the document to **HTML** (a standalone file with styles embedded) on demand, choosing where to save it. | Must | Agreed | HTML exporter unit tests |
 | REQ-018 | The user can export the document to **PDF** (paginated, matching the rendered view) on demand, choosing where to save it. | Must | Agreed | PDF export integration test (PDFKit page check) |
-| REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | Agreed | Manual QA |
+| REQ-019 | Fenced code blocks in the rendered view are syntax highlighted. | Should | In progress | Manual QA |
 | REQ-020 | The two panes keep their scroll positions in sync. | Should | Agreed | Manual QA |
-| REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | Agreed | Manual QA |
-| REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | In progress | `URLPolicyTests`, `RendererRelativeURLTests`; link opening in Phase 2 |
-| REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Agreed | Highlighter unit tests |
+| REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | In progress | Preview CSS and source colors adapt; exports in Phase 5 |
+| REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | Done | `URLPolicyTests`, `PreviewURLTests`, `FolderAccessStoreTests` |
+| REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
 
 ## Non-functional requirements
 
@@ -50,7 +50,7 @@ owner's approval.
 | REQ-004 | The minimum supported OS is macOS 15.0 (Sequoia). | Must | Done | Xcode deployment target (`MACOSX_DEPLOYMENT_TARGET = 15.0`) |
 | REQ-005 | The UI is crisp, clean and easy to understand: native macOS controls, toolbar and menus following Apple's Human Interface Guidelines, SF Symbols, and no clutter. | Must | Agreed | Manual design review |
 | REQ-006 | Dependencies are kept small and GPL-3.0-compatible: Apple's `swift-markdown` (Apache-2.0) for parsing and `highlight.js` (BSD-3-Clause), bundled in the app. The app needs no network access to work. | Must | In progress | Package manifest review |
-| REQ-007 | Rendering a document never runs scripts from that document: `<script>` tags and inline event handlers in raw HTML are removed. | Should | In progress | `HTMLSanitizerTests`; preview CSP in Phase 2 |
+| REQ-007 | Rendering a document never runs scripts from that document: `<script>` tags and inline event handlers in raw HTML are removed. | Should | Done | `HTMLSanitizerTests`; preview Content-Security-Policy blocks inline script |
 | REQ-008 | A GitHub Actions workflow builds the app and runs the full test suite on every push and pull request (unit tests; UI tests run locally, see `CLAUDE.md`). | Should | Done | CI run status (first green run 2026-11-14) |
 
 ## Change log
@@ -63,3 +63,4 @@ owner's approval.
 | 2026-11-14 | Phase 0: REQ-001 and REQ-004 Done; REQ-006, REQ-008 and REQ-010 In progress. |
 | 2026-11-14 | REQ-008 Done: first CI run passed. |
 | 2026-11-14 | Phase 1: GFM renderer, sanitizer and URL resolution built; REQ-007, REQ-013, REQ-016 and REQ-022 In progress (UI work remains). |
+| 2026-11-14 | Phase 2: two-pane window. REQ-007, REQ-011, REQ-012, REQ-014, REQ-022 and REQ-023 Done; REQ-019 and REQ-021 In progress. |

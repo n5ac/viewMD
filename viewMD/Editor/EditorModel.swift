@@ -1,0 +1,59 @@
+//
+//  EditorModel.swift
+//  viewMD
+//
+//  Per-window editor state shared by the two panes, the toolbar and the menu
+//  commands.
+//
+
+import Foundation
+import Observation
+
+/// Which pane an action or edit applies to.
+enum EditorPane: Equatable, Sendable {
+    /// The rendered Markdown (left).
+    case preview
+    /// The Markdown source (right).
+    case source
+}
+
+/// State for one document window.
+///
+/// The document text itself lives in the `MarkdownDocument` binding, the
+/// single source of truth. This model holds everything else the window
+/// needs: which pane is focused, whether the source pane is shown, and weak
+/// links to the two pane controllers so menu commands can act on whichever
+/// pane has focus.
+@MainActor
+@Observable
+final class EditorModel {
+
+    /// Whether the source pane (right) is visible. When `false`, the rendered
+    /// view fills the window (REQ-014).
+    var isSourceVisible = true
+
+    /// The pane the user last worked in. Insert commands go here (REQ-015).
+    /// If the source pane is hidden, the preview is used whatever this says.
+    var lastFocusedPane: EditorPane = .source
+
+    /// Set when the preview can't show local images because the app hasn't
+    /// been granted access to the document's folder (sandbox). Drives the
+    /// "Grant Access" banner (REQ-022).
+    var needsFolderAccess = false
+
+    /// The source editor of this window, registered by `SourceEditorView`.
+    @ObservationIgnored weak var sourceEditor: SourceEditorController?
+
+    /// The preview of this window, registered by `PreviewView`.
+    @ObservationIgnored weak var preview: PreviewController?
+
+    /// The pane that insert commands should target right now.
+    var activePane: EditorPane {
+        isSourceVisible ? lastFocusedPane : .preview
+    }
+
+    /// Shows or hides the source pane.
+    func toggleSourcePane() {
+        isSourceVisible.toggle()
+    }
+}

@@ -1,0 +1,201 @@
+/*
+  viewMD preview and export stylesheet (REQ-005, REQ-021).
+
+  Clean, GitHub-like typography in the system font, following the system
+  light/dark appearance. Also inlined into HTML exports and used for PDF.
+*/
+
+:root {
+  color-scheme: light dark;
+  --text: #1f2328;
+  --text-muted: #59636e;
+  --background: #ffffff;
+  --border: #d1d9e0;
+  --border-muted: #d1d9e0b3;
+  --code-background: #818b981f;
+  --pre-background: #f6f8fa;
+  --link: #0969da;
+  --quote-border: #d1d9e0;
+  --table-stripe: #f6f8fa;
+  --mark: #fff8c5;
+  --focus-ring: #0969da33;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e6edf3;
+    --text-muted: #9198a1;
+    --background: #1e1e1e;
+    --border: #3d444d;
+    --border-muted: #3d444db3;
+    --code-background: #656c7633;
+    --pre-background: #262626;
+    --link: #4493f8;
+    --quote-border: #3d444d;
+    --table-stripe: #242424;
+    --mark: #bb800926;
+    --focus-ring: #4493f833;
+  }
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--background);
+  font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+}
+
+.markdown-body {
+  box-sizing: border-box;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 36px 64px;
+  outline: none;
+  min-height: 100vh;
+}
+
+.markdown-body:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+}
+
+.markdown-body > :first-child { margin-top: 0 !important; }
+
+p, blockquote, ul, ol, dl, table, pre, details, .html-block {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 24px 0 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+h1 { font-size: 2em; padding-bottom: .3em; border-bottom: 1px solid var(--border-muted); }
+h2 { font-size: 1.5em; padding-bottom: .3em; border-bottom: 1px solid var(--border-muted); }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: .875em; }
+h6 { font-size: .85em; color: var(--text-muted); }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; }
+
+hr {
+  height: 3px;
+  margin: 24px 0;
+  padding: 0;
+  border: 0;
+  background: var(--border);
+}
+
+blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0 1em;
+  color: var(--text-muted);
+  border-left: .25em solid var(--quote-border);
+}
+blockquote > :last-child { margin-bottom: 0; }
+
+ul, ol { padding-left: 2em; }
+li + li { margin-top: .25em; }
+li > p { margin-top: 16px; }
+ul ul, ul ol, ol ol, ol ul { margin-top: 0; margin-bottom: 0; }
+
+ul.contains-task-list { padding-left: 1.4em; }
+li.task-list-item { list-style: none; }
+li.task-list-item input[type="checkbox"] {
+  margin: 0 .35em .2em -1.4em;
+  vertical-align: middle;
+}
+
+code, kbd, pre, samp {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 85%;
+}
+
+code {
+  padding: .2em .4em;
+  margin: 0;
+  white-space: break-spaces;
+  background: var(--code-background);
+  border-radius: 6px;
+}
+
+pre {
+  padding: 16px;
+  overflow: auto;
+  line-height: 1.45;
+  background: var(--pre-background);
+  border-radius: 6px;
+}
+pre code, pre code.hljs {
+  display: block;
+  padding: 0;
+  font-size: 100%;
+  white-space: pre;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  line-height: 10px;
+  vertical-align: middle;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+
+table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+}
+th { font-weight: 600; }
+tr:nth-child(2n) { background: var(--table-stripe); }
+
+img {
+  max-width: 100%;
+  box-sizing: content-box;
+}
+
+mark { background: var(--mark); color: inherit; }
+
+/* Editing in the rendered pane (REQ-013): a subtle ring around the block
+   being edited, so it's clear where typing goes. */
+.markdown-body[contenteditable="true"] > *:focus-within {
+  outline: none;
+}
+.markdown-body[contenteditable="true"] > .viewmd-editing {
+  box-shadow: 0 0 0 4px var(--focus-ring);
+  border-radius: 4px;
+}
+
+/* Print / PDF export (REQ-018): no editing chrome, avoid splitting small
+   blocks across pages. */
+@media print {
+  .markdown-body { max-width: none; padding: 0; min-height: 0; }
+  .markdown-body > .viewmd-editing { box-shadow: none; }
+  pre, blockquote, table, img, h1, h2, h3, h4, h5, h6 { break-inside: avoid; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  a { color: var(--text); text-decoration: underline; }
+}

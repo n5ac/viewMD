@@ -81,12 +81,23 @@ and any requirement that needs a decision.
   - GFM footnotes aren't supported by swift-markdown and aren't rendered;
     they're outside REQ-016's list.
 
-### Phase 2: Two-pane window with live one-way updates
+### Phase 2: Two-pane window with live one-way updates (done 2026-11-14)
 - Split window: preview on the left, source on the right (REQ-011, P-006).
 - `SourceEditorView` and `PreviewView`, plus a debounced live update and a latency test (REQ-012).
 - Show/hide source pane: toolbar button, View menu, ⌥⌘S (REQ-014).
 - Light/dark appearance (REQ-021); links open in the browser (REQ-022).
 - **Done when:** typing in the source updates the preview live, and the pane toggle works.
+- Notes:
+  - The preview loads from a private `viewmd:` URL scheme
+    (`PreviewSchemeHandler`). Local images are read by the app process,
+    which holds the sandbox access. When a sibling image is blocked, a
+    "Grant Access…" banner saves a security-scoped folder bookmark.
+  - A Content-Security-Policy in `preview.html` blocks all inline script
+    (a second layer behind REQ-007's sanitizer).
+  - ⌥⌘S is bound on the toolbar button, because a shortcut on the
+    `FocusedValue`-driven menu item never fired.
+  - Source syntax coloring (REQ-023) was pulled forward from Phase 6, and
+    highlight.js 11.11.1 (BSD-3-Clause) is now bundled.
 
 ### Phase 3: Quick-insert pull-downs
 - `MarkdownSnippets` engine for every REQ-015 structure, with wrap-selection behavior.
