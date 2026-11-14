@@ -115,7 +115,9 @@ final class PreviewEditingUITests: XCTestCase {
     @MainActor
     func testUndoWithSourceHidden() throws {
         seed("Alpha", waitingFor: "Alpha")
-        app.typeKey("s", modifierFlags: [.command, .option])
+        // Hide the source with the toolbar button (the shortcut has its own
+        // test; a keystroke here was occasionally delivered too early).
+        window.toolbars.buttons["toggle-source"].click()
         XCTAssertTrue(sourceEditor.waitForNonExistence(timeout: 5))
         preview.staticTexts["Alpha"].click()
         app.typeKey(.rightArrow, modifierFlags: .command)

@@ -42,6 +42,10 @@ viewMD is sandboxed. If a document shows images from its own folder, a bar
 above the preview offers **Grant Access…**. Choose the folder once and
 viewMD remembers it.
 
+## Privacy
+
+viewMD collects no data. See the [privacy policy](docs/PRIVACY.md).
+
 ## Building
 
 Open `viewMD.xcodeproj` in Xcode, or from the command line:

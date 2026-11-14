@@ -39,6 +39,7 @@ owner's approval.
 | REQ-021 | The app follows the system light / dark appearance in both panes and in exports. | Should | Done | Preview and export CSS follow `prefers-color-scheme`; `HTMLExportTests.colorSchemes`; print forces light |
 | REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | Done | `URLPolicyTests`, `PreviewURLTests`, `FolderAccessStoreTests` |
 | REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
+| REQ-024 | viewMD can be distributed to testers through TestFlight (external testing): the app declares an App Store category (Developer Tools) and its encryption exemption, and has a published privacy policy. | Should | In progress | `AppMetadataTests`; successful App Store Connect upload |
 
 ## Non-functional requirements
 
@@ -69,3 +70,4 @@ owner's approval.
 | 2026-11-14 | Phase 5: HTML and PDF export. REQ-017, REQ-018, REQ-019 and REQ-021 Done. |
 | 2026-11-14 | Phase 6: scroll sync, app icon, README features and shortcuts. All requirements Done. |
 | 2026-11-14 | REQ-016 marked Done (left In progress by mistake after Phase 2). |
+| 2026-11-14 | REQ-024 added (owner request): TestFlight alpha for external testers. |
