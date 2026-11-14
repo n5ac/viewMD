@@ -112,7 +112,7 @@ and any requirement that needs a decision.
   - Menu commands target `EditorModel.active`, the window last worked in.
     Shortcuts on SwiftUI `FocusedValue`-driven menu items never fired.
 
-### Phase 4: Editing in the rendered pane (the hardest part, so it comes early)
+### Phase 4: Editing in the rendered pane (done 2026-11-14)
 - `bridge.js`: makes top-level blocks `contenteditable` and posts
   `{lines, html}` to Swift on a debounced input.
 - `HTMLToMarkdown` + `SourceSplicer` (REQ-013).
@@ -122,6 +122,22 @@ and any requirement that needs a decision.
 - **Done when:** round-trip tests pass (Markdown → HTML → edit → Markdown
   changes only that block), and manual QA confirms typing in the preview is
   smooth.
+- Notes:
+  - `bridge.js` keeps a snapshot of each block. After 250 ms without
+    typing, it sends the changed run of blocks with its source lines. Until
+    the re-render arrives, it holds back further edits, and it keeps
+    unsent typing in place instead of overwriting it.
+  - Links and images carry their source URL in `data-md-href` /
+    `data-md-src`, so edits don't write resolved `viewmd://` URLs into the
+    file.
+  - `HTMLToMarkdown` protects newlines between text characters before
+    tidy-HTML parsing, which would otherwise collapse soft line breaks.
+  - Undo: WebKit's own DOM undo is disabled. ⌘Z in either pane acts on the
+    document. SwiftUI's automatic per-keystroke registration is paused when
+    the binding is written. A text-storage delegate catches undo and redo
+    of programmatic changes, which `textDidChange` misses.
+  - In the rendered pane, ⌘-click opens a link; a plain click places the
+    caret.
 
 ### Phase 5: Export
 - File ▸ Export ▸ HTML… / PDF…, with a save panel (REQ-017, REQ-018). The toolbar Export ▾ mirrors it.

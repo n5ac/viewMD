@@ -29,7 +29,7 @@ final class FocusReportingTextView: NSTextView {
 /// Registered with the window's ``EditorModel`` so menu commands can insert
 /// at the insertion point.
 @MainActor
-final class SourceEditorController: NSObject, NSTextViewDelegate {
+final class SourceEditorController: NSObject, NSTextViewDelegate, NSTextStorageDelegate {
 
     /// The text view. Created by ``makeScrollView()``.
     private(set) var textView: FocusReportingTextView!
@@ -88,6 +88,7 @@ final class SourceEditorController: NSObject, NSTextViewDelegate {
         textView.setAccessibilityIdentifier("source-editor")
         textView.setAccessibilityLabel("Markdown source")
         textView.delegate = self
+        textView.textStorage?.delegate = self
         textView.onFocus = { [weak self] in self?.onFocus?() }
         self.textView = textView
         return scrollView
@@ -159,6 +160,29 @@ final class SourceEditorController: NSObject, NSTextViewDelegate {
         textView.window?.makeFirstResponder(textView)
     }
 
+    // MARK: NSTextStorageDelegate
+
+    /// Catches text changes made by undo and redo.
+    ///
+    /// When NSTextView undoes a change that was made programmatically (an
+    /// edit from the rendered pane, applied by ``applyExternalText(_:)``), it
+    /// restores the text storage without calling `textDidChange`, which
+    /// would leave the document out of sync with what's shown. Changes during
+    /// undo/redo are reported from here instead, after the storage has
+    /// finished processing.
+    nonisolated func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions,
+                                 range editedRange: NSRange, changeInLength delta: Int) {
+        guard editedMask.contains(.editedCharacters) else { return }
+        MainActor.assumeIsolated {
+            guard let undoManager = textView.undoManager, undoManager.isUndoing || undoManager.isRedoing else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.highlighter.highlight(self.textView.textStorage)
+                self.onTextChange?(self.textView.string)
+            }
+        }
+    }
+
     // MARK: NSTextViewDelegate
 
     func textDidChange(_ notification: Notification) {
@@ -183,8 +207,16 @@ struct SourceEditorView: NSViewRepresentable {
         let controller = context.coordinator
         let scrollView = controller.makeScrollView()
         controller.setInitialText(text)
-        controller.onTextChange = { newText in
-            if text != newText { text = newText }
+        controller.onTextChange = { [weak controller] newText in
+            guard text != newText else { return }
+            // The text view has already recorded this change for undo (with
+            // typing coalesced into one step). Writing the document binding
+            // would make SwiftUI record a second, per-keystroke step, so
+            // registration is paused while the binding is written.
+            let undoManager = controller?.textView.undoManager
+            undoManager?.disableUndoRegistration()
+            text = newText
+            undoManager?.enableUndoRegistration()
         }
         controller.onFocus = {
             model.lastFocusedPane = .source

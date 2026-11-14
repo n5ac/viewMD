@@ -356,6 +356,16 @@ nonisolated private struct HTMLVisitor: MarkupVisitor {
         "<br />\n"
     }
 
+    /// When a URL was rewritten (resolved or percent-encoded), the original
+    /// as written in the source is kept in a `data-md-*` attribute, so
+    /// converting an edited block back to Markdown (`HTMLToMarkdown`)
+    /// restores what the user wrote instead of the resolved URL.
+    private func originalURLAttribute(_ name: String, original: String?, emitted: String) -> String {
+        let original = original ?? ""
+        let escapedOriginal = HTMLEscaping.escape(original)
+        return escapedOriginal == emitted ? "" : " data-md-\(name)=\"\(escapedOriginal)\""
+    }
+
     mutating func visitLink(_ link: Link) -> String {
         linkDepth += 1
         defer { linkDepth -= 1 }
@@ -363,13 +373,15 @@ nonisolated private struct HTMLVisitor: MarkupVisitor {
         // An unsafe target (e.g. javascript:) keeps its text but loses the link.
         guard let href = attributeURL(link.destination, context: .link) else { return content }
         let title = link.title.map { " title=\"\(HTMLEscaping.escape($0))\"" } ?? ""
-        return "<a href=\"\(href)\"\(title)>" + content + "</a>"
+        let original = originalURLAttribute("href", original: link.destination, emitted: href)
+        return "<a href=\"\(href)\"\(title)\(original)>" + content + "</a>"
     }
 
     mutating func visitImage(_ image: Image) -> String {
         let alt = HTMLEscaping.escape(image.plainText)
         guard let src = attributeURL(image.source, context: .image) else { return alt }
         let title = image.title.map { " title=\"\(HTMLEscaping.escape($0))\"" } ?? ""
-        return "<img src=\"\(src)\" alt=\"\(alt)\"\(title) />"
+        let original = originalURLAttribute("src", original: image.source, emitted: src)
+        return "<img src=\"\(src)\" alt=\"\(alt)\"\(title)\(original) />"
     }
 }

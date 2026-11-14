@@ -38,7 +38,7 @@ struct ContentView: View {
                     FolderAccessBanner(grant: grantFolderAccess)
                     Divider()
                 }
-                PreviewView(text: document.text, baseURL: previewBaseURL, model: model)
+                PreviewView(text: $document.text, baseURL: previewBaseURL, model: model)
             }
             .frame(minWidth: 280, maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityElement(children: .contain)
