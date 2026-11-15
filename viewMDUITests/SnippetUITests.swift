@@ -16,7 +16,7 @@ final class SnippetUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launch()
+        app.launchWithoutRestoredWindows()
         app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(sourceEditor.waitForExistence(timeout: 10))
         sourceEditor.click()

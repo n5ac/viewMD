@@ -17,7 +17,7 @@ final class LaunchUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launch()
+        app.launchWithoutRestoredWindows()
         // A document app may show an open panel on launch; ⌘N always opens
         // a new untitled window regardless.
         app.typeKey("n", modifierFlags: .command)

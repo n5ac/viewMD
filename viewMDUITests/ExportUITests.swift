@@ -16,7 +16,7 @@ final class ExportUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launch()
+        app.launchWithoutRestoredWindows()
         app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(app.windows.firstMatch.textViews["source-editor"].waitForExistence(timeout: 10))
     }
