@@ -41,6 +41,7 @@ owner's approval.
 | REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
 | REQ-024 | viewMD can be distributed to testers through TestFlight (external testing): the app declares an App Store category (Developer Tools) and its encryption exemption, and has a published privacy policy. | Should | Done | `AppMetadataTests`; build 0.1 (1) uploaded and submitted to TestFlight external testing on 2026-11-14 |
 | REQ-025 | Find: ⌘F searches the pane the user is working in (the rendered pane when the source is hidden), with the standard Edit ▸ Find menu (Find ⌘F, Find and Replace ⌥⌘F, Find Next ⌘G, Find Previous ⇧⌘G, Use Selection for Find ⌘E). The rendered pane highlights all matches case-insensitively, shows the match count and position, and never changes the document; the source pane uses the macOS find bar, including replace. | Must | Done | `FindTests` (commands, find state, live preview and source pane); `FindUITests` |
+| REQ-026 | The rendered pane's text fills the pane's width and reflows as the window is resized, like a word processor. HTML exports keep a fixed reading column (860 px); PDF follows the page width. | Should | Done | `PreviewLayoutTests` (live WKWebView at two widths; export unchanged) |
 
 ## Non-functional requirements
 
@@ -74,3 +75,4 @@ owner's approval.
 | 2026-11-14 | REQ-024 added (owner request): TestFlight alpha for external testers. |
 | 2026-11-14 | REQ-024 Done: build 0.1 (1) uploaded; external group Alpha (Ed Gonzalez) submitted for Beta App Review. |
 | 2026-11-15 | REQ-025 added (owner request: "hit CMD-F and search") and Done. |
+| 2026-11-15 | REQ-026 added (owner request: rendered contents adjust to the window width, like Word) and Done. |

@@ -11,7 +11,8 @@ files, see the [installation guide](docs/INSTALL.md)
 - **Two panes:** the rendered document on the left, the Markdown source on
   the right. Both are editable, and each updates the other as you type.
   Hide the source (⌥⌘S or the toolbar button) to just read or edit the
-  rendered view.
+  rendered view. The rendered text uses the full width of its pane and
+  reflows as you resize the window.
 - **GitHub Flavored Markdown:** tables, task lists, strikethrough,
   autolinks and fenced code with syntax highlighting.
 - **Quick inserts:** toolbar pull-downs and the Format menu add headings,

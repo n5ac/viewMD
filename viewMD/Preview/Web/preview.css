@@ -79,6 +79,12 @@ body {
   min-height: 100vh;
 }
 
+/* The rendered pane reflows to the window's width, like a word processor
+   (REQ-026). HTML exports keep the 860px reading column above. */
+.markdown-body.fill-width {
+  max-width: none;
+}
+
 .markdown-body:empty::before {
   content: attr(data-placeholder);
   color: var(--text-muted);
