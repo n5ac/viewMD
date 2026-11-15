@@ -31,7 +31,6 @@
 		4FD3945430A8BD1D0056E3A2 /* viewMD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = viewMD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FD3947130A8BD200056E3A2 /* viewMDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = viewMDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FD3948130A8BD200056E3A2 /* viewMDUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = viewMDUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4FD3953030A8EEDA0056E3A2 /* viewMD.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = viewMD.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -107,13 +106,6 @@
 				4FD3945430A8BD1D0056E3A2 /* viewMD.app */,
 				4FD3947130A8BD200056E3A2 /* viewMDTests.xctest */,
 				4FD3948130A8BD200056E3A2 /* viewMDUITests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		4FD3953130A8EEDA0056E3A2 /* Products */ = {
-			isa = PBXGroup;
-			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -228,12 +220,6 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4FD3945530A8BD1D0056E3A2 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4FD3953130A8EEDA0056E3A2 /* Products */;
-					ProjectRef = 4FD3953030A8EEDA0056E3A2 /* viewMD.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				4FD3945330A8BD1D0056E3A2 /* viewMD */,
