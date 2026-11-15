@@ -210,6 +210,17 @@ final class SourceEditorController: NSObject, NSTextViewDelegate, NSTextStorageD
         onScroll?(topVisibleLine)
     }
 
+    /// Runs an Edit ▸ Find command with the text view's built-in find bar
+    /// (REQ-025).
+    ///
+    /// - Parameter action: The command.
+    func performFind(_ action: FindAction) {
+        // NSTextView reads the action from the sender's tag.
+        let sender = NSMenuItem()
+        sender.tag = action.textFinderAction.rawValue
+        textView.performTextFinderAction(sender)
+    }
+
     /// Gives the text view keyboard focus.
     func focus() {
         textView.window?.makeFirstResponder(textView)

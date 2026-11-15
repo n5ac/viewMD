@@ -5,6 +5,10 @@
 //   viewmd.format(command)        formatting from the pull-downs (REQ-015)
 //   viewmd.caretLine()            last source line of the block at the caret
 //   viewmd.scrollToLine(line)     scroll sync from the source pane (REQ-020)
+//   viewmd.find(query, step)      find in the pane (REQ-025); → {count, current}
+//   viewmd.endFind(select)        clear find highlights, optionally selecting
+//                                 the current match
+//   viewmd.selectionText()        the selected text
 //
 // Page → Swift (window.webkit.messageHandlers.viewmd):
 //   {type: "ready"}                         page loaded
@@ -13,6 +17,7 @@
 //   {type: "edit", start, end, afterLine, html}
 //                                           blocks edited in the pane (REQ-013)
 //   {type: "scroll", line}                  top visible source line (REQ-020)
+//   {type: "find", count, current}          matches recounted after a render
 //
 // Rendering patches the DOM instead of replacing it. Each top-level block is
 // tracked in `entries` with the source lines it came from and its serialized
@@ -184,6 +189,10 @@
       if (caret !== null && document.activeElement === content) restoreCaret(caret);
     }
     entries = head.concat(middle, tail);
+    if (find.query) {
+      const result = findInPane(find.query, "refresh");
+      post({ type: "find", count: result.count, current: result.current });
+    }
   }
 
   // MARK: Editing (REQ-013)
@@ -406,7 +415,127 @@
     });
   }, { passive: true });
 
-  window.viewmd = { render, format, caretLine, scrollToLine };
+  // MARK: Find (REQ-025)
+
+  /** The active search: query, matches (Ranges, in order) and the current match (-1 = none). */
+  const find = { query: "", matches: [], current: -1 };
+
+  // Matches are painted with the CSS Custom Highlight API, which doesn't
+  // touch the DOM. Wrapping matches in elements would look like an edit to
+  // the edit-back code and corrupt the Markdown.
+  const highlights = window.CSS && CSS.highlights && typeof Highlight === "function" ? CSS.highlights : null;
+
+  function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  /**
+   * Every case-insensitive match of `query` in the pane, as Ranges. A match
+   * can cross inline elements (e.g. "bold" in "**bo**ld", or a highlighted
+   * code span) but not the boundary between top-level blocks.
+   */
+  function findRanges(query) {
+    if (!query) return [];
+    const pattern = new RegExp(escapeRegExp(query), "giu");
+    const ranges = [];
+    for (const block of content.childNodes) {
+      const nodes = [];
+      const starts = [];
+      let text = "";
+      const add = (node) => { nodes.push(node); starts.push(text.length); text += node.data; };
+      if (block.nodeType === Node.TEXT_NODE) add(block);
+      else if (block.nodeType === Node.ELEMENT_NODE) {
+        const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) add(node);
+      }
+      if (!text) continue;
+      // Maps an offset in `text` to a (node, offset) pair. A start offset
+      // on a node boundary belongs to the next node, an end offset to the
+      // previous one, so ranges don't include empty edges.
+      let index = 0;
+      const locate = (offset, isEnd) => {
+        while (index < nodes.length - 1 &&
+               (isEnd ? starts[index] + nodes[index].data.length < offset : starts[index + 1] <= offset)) index++;
+        return [nodes[index], offset - starts[index]];
+      };
+      for (const match of text.matchAll(pattern)) {
+        if (!match[0].length) continue;
+        const range = document.createRange();
+        range.setStart(...locate(match.index, false));
+        range.setEnd(...locate(match.index + match[0].length, true));
+        ranges.push(range);
+      }
+    }
+    return ranges;
+  }
+
+  /** Paints all matches, and the current one more strongly. */
+  function paintFind() {
+    if (!highlights) return;
+    highlights.delete("viewmd-find");
+    highlights.delete("viewmd-find-current");
+    if (!find.matches.length) return;
+    const all = new Highlight();
+    find.matches.forEach((range) => all.add(range));
+    highlights.set("viewmd-find", all);
+    const current = find.matches[find.current];
+    if (current) highlights.set("viewmd-find-current", new Highlight(current));
+  }
+
+  /** Index of the first match at or below the top of the view (0 if none). */
+  function firstVisibleMatch() {
+    const index = find.matches.findIndex((range) => range.getBoundingClientRect().bottom >= 0);
+    return index < 0 ? 0 : index;
+  }
+
+  /** Scrolls a match into view (a third of the way down) if it's off screen. */
+  function revealMatch(range) {
+    const rect = range.getBoundingClientRect();
+    if (rect.top >= 0 && rect.bottom <= window.innerHeight) return;
+    window.scrollTo({ top: window.scrollY + rect.top - window.innerHeight / 3 });
+  }
+
+  /**
+   * Searches the pane and moves to a match.
+   *   step "update"    query typed or bar reopened: first match in view
+   *   step "next"      next match, wrapping
+   *   step "previous"  previous match, wrapping
+   *   step "refresh"   after a render: recount, keep position, don't scroll
+   * Returns {count, current}.
+   */
+  function findInPane(query, step) {
+    const changed = query !== find.query;
+    find.query = query;
+    find.matches = findRanges(query);
+    const count = find.matches.length;
+    if (!count) find.current = -1;
+    else if (changed || find.current < 0) find.current = firstVisibleMatch();
+    else if (step === "next") find.current = (find.current + 1) % count;
+    else if (step === "previous") find.current = (find.current - 1 + count) % count;
+    else find.current = Math.min(find.current, count - 1);
+    paintFind();
+    if (find.current >= 0 && step !== "refresh") revealMatch(find.matches[find.current]);
+    return { count, current: find.current };
+  }
+
+  /** Ends the search; if `select`, the current match becomes the selection. */
+  function endFind(select) {
+    const current = find.matches[find.current];
+    find.query = "";
+    find.matches = [];
+    find.current = -1;
+    paintFind();
+    if (select && current && !current.collapsed && content.contains(current.startContainer)) {
+      content.focus();
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(current);
+    }
+  }
+
+  const selectionText = () => window.getSelection().toString();
+
+  window.viewmd = { render, format, caretLine, scrollToLine, find: findInPane, endFind, selectionText };
 
   post({ type: "ready" });
 })();

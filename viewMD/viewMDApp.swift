@@ -17,6 +17,7 @@ struct viewMDApp: App {
         }
         .commands {
             ExportCommands()
+            FindCommands()
             ViewCommands()
             FormatCommands()
         }
@@ -33,6 +34,31 @@ struct ExportCommands: Commands {
             Button(ExportFormat.pdf.menuTitle) { EditorModel.active?.export(.pdf) }
                 .keyboardShortcut("p", modifiers: [.command, .shift])
         }
+    }
+}
+
+/// The Edit ▸ Find submenu (REQ-025), with the standard macOS shortcuts.
+/// Each command goes to the pane the user is working in, through
+/// ``EditorModel/active`` like the other menus.
+struct FindCommands: Commands {
+    var body: some Commands {
+        CommandGroup(after: .pasteboard) {
+            Divider()
+            Menu("Find") {
+                item(.showFind, key: "f")
+                item(.showReplace, key: "f", modifiers: [.command, .option])
+                item(.next, key: "g")
+                item(.previous, key: "g", modifiers: [.command, .shift])
+                Divider()
+                item(.useSelection, key: "e")
+            }
+        }
+    }
+
+    /// One menu item that runs `action`, with its shortcut.
+    private func item(_ action: FindAction, key: KeyEquivalent, modifiers: EventModifiers = .command) -> some View {
+        Button(action.title) { EditorModel.active?.find(action) }
+            .keyboardShortcut(key, modifiers: modifiers)
     }
 }
 

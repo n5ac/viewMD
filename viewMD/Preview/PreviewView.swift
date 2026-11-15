@@ -71,7 +71,7 @@ final class PreviewWebView: WKWebView {
 /// Owns the preview web view: renders the source, sends the result to the
 /// page, and handles messages from it.
 @MainActor
-final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
+final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDelegate, PreviewSearching {
 
     /// The web view. Its page is loaded once; later updates are patches.
     let webView: PreviewWebView
@@ -93,6 +93,10 @@ final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDel
     /// Called with the source line at the top of the rendered pane when the
     /// user scrolls it (REQ-020).
     var onScroll: ((Int) -> Void)?
+
+    /// Called when the page recounts find matches after re-rendering
+    /// (REQ-025).
+    var onFindUpdate: ((FindMatches) -> Void)?
 
     /// How long to wait after a keystroke before re-rendering. Short enough
     /// to feel instant (REQ-012's 150 ms target includes this), long enough
@@ -215,6 +219,28 @@ final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDel
         webView.window?.makeFirstResponder(webView)
     }
 
+    // MARK: PreviewSearching (REQ-025)
+
+    func find(_ query: String, step: FindStep) async -> FindMatches {
+        guard isPageReady else { return .none }
+        let result = try? await webView.callAsyncJavaScript("return window.viewmd.find(query, step)",
+                                                           arguments: ["query": query, "step": step.rawValue],
+                                                           contentWorld: .page)
+        return FindMatches.parse(result)
+    }
+
+    func endFind(selectingMatch: Bool) {
+        guard isPageReady else { return }
+        if selectingMatch { focus() }
+        webView.callAsyncJavaScript("window.viewmd.endFind(select)", arguments: ["select": selectingMatch], in: nil, in: .page) { _ in }
+    }
+
+    func selectedText() async -> String {
+        guard isPageReady else { return "" }
+        let result = try? await webView.callAsyncJavaScript("return window.viewmd.selectionText()", arguments: [:], contentWorld: .page)
+        return result as? String ?? ""
+    }
+
     /// Sends a rendered document to the page (or keeps it until the page is
     /// ready).
     private func show(_ rendered: RenderedDocument) {
@@ -238,6 +264,8 @@ final class PreviewController: NSObject, WKScriptMessageHandler, WKNavigationDel
         case "edit":
             guard let edit = Self.parseEdit(body), let newText = onEdit?(edit) else { return }
             update(text: newText, baseURL: lastBaseURL, force: true)
+        case "find":
+            onFindUpdate?(FindMatches.parse(body))
         case "scroll":
             if let line = (body["line"] as? NSNumber)?.intValue { onScroll?(line) }
         case "openLink":
@@ -315,7 +343,9 @@ struct PreviewView: NSViewRepresentable {
         }
         controller.onAccessDenied = { model.needsFolderAccess = true }
         controller.onScroll = { line in model.paneDidScroll(.preview, toLine: line) }
+        controller.onFindUpdate = { matches in model.previewFind.pageDidUpdate(matches) }
         model.preview = controller
+        model.previewFind.searcher = controller
         controller.update(text: text, baseURL: baseURL)
         return controller.webView
     }

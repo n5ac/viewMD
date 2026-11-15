@@ -40,6 +40,7 @@ owner's approval.
 | REQ-022 | Links in the rendered view open in the default browser. Relative image paths resolve against the document's folder. | Should | Done | `URLPolicyTests`, `PreviewURLTests`, `FolderAccessStoreTests` |
 | REQ-023 | The source editor uses a monospaced font with light Markdown syntax coloring (headings, emphasis, code, links). | Should | Done | `MarkdownHighlighterTests` |
 | REQ-024 | viewMD can be distributed to testers through TestFlight (external testing): the app declares an App Store category (Developer Tools) and its encryption exemption, and has a published privacy policy. | Should | Done | `AppMetadataTests`; build 0.1 (1) uploaded and submitted to TestFlight external testing on 2026-11-14 |
+| REQ-025 | Find: ⌘F searches the pane the user is working in (the rendered pane when the source is hidden), with the standard Edit ▸ Find menu (Find ⌘F, Find and Replace ⌥⌘F, Find Next ⌘G, Find Previous ⇧⌘G, Use Selection for Find ⌘E). The rendered pane highlights all matches case-insensitively, shows the match count and position, and never changes the document; the source pane uses the macOS find bar, including replace. | Must | Done | `FindTests` (commands, find state, live preview and source pane); `FindUITests` |
 
 ## Non-functional requirements
 
@@ -72,3 +73,4 @@ owner's approval.
 | 2026-11-14 | REQ-016 marked Done (left In progress by mistake after Phase 2). |
 | 2026-11-14 | REQ-024 added (owner request): TestFlight alpha for external testers. |
 | 2026-11-14 | REQ-024 Done: build 0.1 (1) uploaded; external group Alpha (Ed Gonzalez) submitted for Beta App Review. |
+| 2026-11-15 | REQ-025 added (owner request: "hit CMD-F and search") and Done. |

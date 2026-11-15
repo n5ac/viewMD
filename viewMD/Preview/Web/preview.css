@@ -18,6 +18,8 @@
   --quote-border: #d1d9e0;
   --table-stripe: #f6f8fa;
   --mark: #fff8c5;
+  --find: #ffe06680;
+  --find-current: #ff9632;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +35,8 @@
     --quote-border: #3d444d;
     --table-stripe: #242424;
     --mark: #bb800926;
+    --find: #ffd33d4d;
+    --find-current: #d29922;
   }
 }
 
@@ -210,4 +214,14 @@ mark { background: var(--mark); color: inherit; }
   pre, blockquote, table, img, h1, h2, h3, h4, h5, h6 { break-inside: avoid; }
   h1, h2, h3, h4, h5, h6 { break-after: avoid; }
   a { color: var(--text); text-decoration: underline; }
+}
+
+/* Find in the rendered pane (REQ-025): every match, and the current one.
+   Painted with the CSS Custom Highlight API; unused in exports. */
+::highlight(viewmd-find) {
+  background-color: var(--find);
+}
+::highlight(viewmd-find-current) {
+  background-color: var(--find-current);
+  color: #000;
 }

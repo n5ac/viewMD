@@ -17,6 +17,10 @@ files, see the [installation guide](docs/INSTALL.md)
 - **Quick inserts:** toolbar pull-downs and the Format menu add headings,
   emphasis, links, images, lists, quotes, code blocks, tables and rules at
   the insertion point, in whichever pane you're working in.
+- **Find:** ⌘F searches the pane you're working in. The rendered pane
+  highlights every match and shows "3 of 12"; ⌘G and ⇧⌘G step through
+  them, and Escape or Done closes the bar. The source pane uses the
+  standard macOS find bar, with replace (⌥⌘F).
 - **Export:** File ▸ Export as HTML… (⇧⌘E) writes a standalone web page.
   File ▸ Export as PDF… (⇧⌘P) writes a paginated PDF.
 - **Scroll sync:** the panes stay on the same part of the document.
@@ -33,6 +37,9 @@ files, see the [installation guide](docs/INSTALL.md)
 | Bulleted / numbered / task list | ⇧⌘8 / ⇧⌘7 / ⇧⌘9 |
 | Quote | ⌘' |
 | Link | ⌘K |
+| Find / find and replace (source) | ⌘F / ⌥⌘F |
+| Find next / previous | ⌘G / ⇧⌘G |
+| Use selection for find | ⌘E |
 | Export HTML / PDF | ⇧⌘E / ⇧⌘P |
 | Open a link in the rendered pane | ⌘-click |
 

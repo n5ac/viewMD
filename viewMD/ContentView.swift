@@ -38,6 +38,10 @@ struct ContentView: View {
                     FolderAccessBanner(grant: grantFolderAccess)
                     Divider()
                 }
+                if model.previewFind.isVisible {
+                    PreviewFindBar(find: model.previewFind)
+                    Divider()
+                }
                 PreviewView(text: $document.text, baseURL: previewBaseURL, model: model)
             }
             .frame(minWidth: 280, maxWidth: .infinity, maxHeight: .infinity)

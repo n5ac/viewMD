@@ -97,6 +97,22 @@ final class EditorModel {
         exportHandler?(format)
     }
 
+    /// The rendered pane's find bar (REQ-025).
+    @ObservationIgnored let previewFind = PreviewFindModel()
+
+    /// Runs an Edit ▸ Find command in the active pane (REQ-025): the source
+    /// pane's built-in find bar, or the rendered pane's own.
+    ///
+    /// - Parameter action: The command.
+    func find(_ action: FindAction) {
+        switch activePane {
+        case .source:
+            sourceEditor?.performFind(action)
+        case .preview:
+            previewFind.perform(action)
+        }
+    }
+
     /// Inserts a Markdown structure in the active pane (REQ-015).
     ///
     /// In the source pane, the snippet edits the text at the insertion point
