@@ -184,7 +184,7 @@ and any requirement that needs a decision.
 | Version | Date | Channel | Notes |
 |---------|------|---------|-------|
 | 0.1 (1) | 2026-11-14 | TestFlight external group **Alpha** (Ed Gonzalez); internal group **viewMD Team** | First alpha. App Store Connect app "viewMD – Markdown Editor" (the name "viewMD" was taken), bundle ID `com.n5ac.viewMD`, SKU `viewMD-mac`. Submitted for Beta App Review. |
-| 0.1 (2) | 2026-11-15 | TestFlight **viewMD Team** (internal) and **Alpha** | Adds Find (⌘F) in both panes (REQ-025). |
+| 0.1 (2) | 2026-11-15 | TestFlight **viewMD Team** (internal) and **Alpha** | Adds Find (⌘F) in both panes (REQ-025). Available to viewMD Team at once. Replaced build 1 in Beta App Review for Alpha (Apple allows one build per version in review at a time), so build 1 was never released externally. |
 
-**How a release is made:** bump `CURRENT_PROJECT_VERSION` (the build number must increase for every upload), run the full test suite, then `xcodebuild archive -scheme viewMD -configuration Release -archivePath <path>.xcarchive -allowProvisioningUpdates`, then `xcodebuild -exportArchive` with an ExportOptions plist containing `method = app-store-connect` and `destination = upload`. Add the build to the TestFlight group in App Store Connect.
+**How a release is made:** bump `CURRENT_PROJECT_VERSION` (the build number must increase for every upload), run the full test suite, then `xcodebuild archive -scheme viewMD -configuration Release -archivePath <path>.xcarchive -allowProvisioningUpdates`, then `xcodebuild -exportArchive` with an ExportOptions plist containing `method = app-store-connect` and `destination = upload`. Add the build to the TestFlight group in App Store Connect. Internal groups get a new build as soon as it's processed; an external group needs Beta App Review, and only one build per version can be in review at a time.
 
