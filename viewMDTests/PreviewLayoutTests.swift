@@ -55,7 +55,7 @@ struct PreviewLayoutTests {
     @Test("The text column follows the pane's width, and text reflows")
     func fillsWidth() async throws {
         let controller = PreviewController(folderAccess: .shared)
-        let window = NSWindow(contentRect: NSRect(x: -5000, y: -5000, width: 1600, height: 600),
+        let window = NSWindow(contentRect: NSRect(x: -5000, y: -5000, width: 1200, height: 600),
                               styleMask: [.titled, .resizable], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         window.contentView = controller.webView
@@ -68,16 +68,27 @@ struct PreviewLayoutTests {
         try #require(rendered, "Preview should render the document")
 
         let contentWidth = "document.getElementById('content').getBoundingClientRect().width"
+        let paneWidth = "document.documentElement.clientWidth"
         let paragraphHeight = "document.querySelector('#content > p').getBoundingClientRect().height"
 
-        // Wide: the column uses the whole pane, well past the old 860px cap.
-        #expect(await waitUntil { await number(contentWidth, in: controller.webView) >= 1500 })
+        /// Whether the text column spans the whole pane, whatever size the
+        /// window actually got (a CI runner's screen may be smaller).
+        func fillsPane() async -> Bool {
+            let pane = await number(paneWidth, in: controller.webView)
+            let content = await number(contentWidth, in: controller.webView)
+            return pane > 0 && abs(content - pane) < 2
+        }
+
+        // Wide: the column uses the whole pane, past the old 860px cap.
+        #expect(await waitUntil { await fillsPane() })
+        #expect(await number(contentWidth, in: controller.webView) > 900)
         let wideHeight = await number(paragraphHeight, in: controller.webView)
 
         // Narrow: the column shrinks with the pane and the text wraps onto
         // more lines.
-        window.setContentSize(NSSize(width: 700, height: 600))
-        #expect(await waitUntil { await number(contentWidth, in: controller.webView) <= 700 })
+        window.setContentSize(NSSize(width: 500, height: 600))
+        #expect(await waitUntil { await number(paneWidth, in: controller.webView) <= 520 })
+        #expect(await fillsPane())
         let narrowHeight = await number(paragraphHeight, in: controller.webView)
         #expect(narrowHeight > wideHeight * 1.5, "Text should reflow to the narrower width")
     }
