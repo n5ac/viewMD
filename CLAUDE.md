@@ -79,4 +79,9 @@ entry, update the old entry rather than keeping both.
 - Don't add third-party dependencies without the owner's approval.
 - Don't commit user-specific Xcode state (`xcuserdata/`, `DerivedData/`); see
   `.gitignore`.
-- License: GPL-3.0 (`LICENSE`).
+- License: GPL-3.0 (`LICENSE`). Every source file (Swift, JavaScript, CSS,
+  HTML, YAML, shell) starts with the copyright and GPL notice
+  ("Copyright (C) <year> Stephen Hicks, N5AC" plus the standard GPL text);
+  copy it from an existing file of the same kind. Bundled third-party files
+  keep their own notices. `tools/check-license-headers.sh` checks this, and
+  CI runs it.

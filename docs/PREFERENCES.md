@@ -18,3 +18,4 @@ supersedes an older one, edit the older entry; don't keep contradictory entries.
 | P-010 | 2026-11-14 | Changing the Xcode template is fine where needed. | App definition. |
 | P-011 | 2026-11-14 | In user-facing documents, credit **Stephen Hicks, N5AC** for the idea and **Claude** for the code. | Requested for the install guide PDF. |
 | P-012 | 2026-11-14 | Alpha releases go out through **TestFlight external testing** (testers get no account access). Category: Developer Tools. Tester feedback goes to n5ac@n5ac.com, and the privacy policy is `docs/PRIVACY.md` on GitHub. | First alpha invite for Ed Gonzalez. |
+| P-013 | 2026-11-15 | Every source file carries the copyright (Stephen Hicks, N5AC) and the GPL license notice. | Owner request. Enforced by `tools/check-license-headers.sh` in CI; third-party files keep their own notices. |

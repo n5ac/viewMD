@@ -4,6 +4,23 @@
 # UI tests (viewMDUITests) are not run here: an ad-hoc-signed UI-test runner
 # can't get macOS automation permission on a headless runner, so they run
 # locally with the developer's signing team instead (see CLAUDE.md).
+#
+# Copyright (C) 2026 Stephen Hicks, N5AC
+#
+# This file is part of viewMD.
+#
+# viewMD is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# viewMD is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along
+# with viewMD. If not, see <https://www.gnu.org/licenses/>.
 name: CI
 
 on:
@@ -20,6 +37,9 @@ jobs:
 
       - name: Show Xcode version
         run: xcodebuild -version
+
+      - name: Check copyright and GPL notices
+        run: tools/check-license-headers.sh
 
       - name: Build and run unit tests
         # Ad-hoc signing (`-`): CI has no access to the developer's signing

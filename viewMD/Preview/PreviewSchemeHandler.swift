@@ -5,6 +5,23 @@
 //  Serves the preview page and the document's local images to the WKWebView
 //  through a private URL scheme (REQ-006, REQ-022).
 //
+//  Copyright (C) 2026 Stephen Hicks, N5AC
+//
+//  This file is part of viewMD.
+//
+//  viewMD is free software: you can redistribute it and/or modify it under
+//  the terms of the GNU General Public License as published by the Free
+//  Software Foundation, either version 3 of the License, or (at your option)
+//  any later version.
+//
+//  viewMD is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+//  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+//  details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with viewMD. If not, see <https://www.gnu.org/licenses/>.
+//
 
 import Foundation
 import UniformTypeIdentifiers
