@@ -35,9 +35,6 @@ final class LaunchUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchWithoutRestoredWindows()
-        // A document app may show an open panel on launch; ⌘N always opens
-        // a new untitled window regardless.
-        app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 10))
     }
 

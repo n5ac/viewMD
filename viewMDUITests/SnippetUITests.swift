@@ -34,7 +34,6 @@ final class SnippetUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchWithoutRestoredWindows()
-        app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(sourceEditor.waitForExistence(timeout: 10))
         sourceEditor.click()
     }

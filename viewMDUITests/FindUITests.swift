@@ -38,7 +38,6 @@ final class FindUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchWithoutRestoredWindows()
-        app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 10))
     }
 

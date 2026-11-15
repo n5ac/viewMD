@@ -34,7 +34,6 @@ final class ExportUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchWithoutRestoredWindows()
-        app.typeKey("n", modifierFlags: .command)
         XCTAssertTrue(app.windows.firstMatch.textViews["source-editor"].waitForExistence(timeout: 10))
     }
 

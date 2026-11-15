@@ -36,7 +36,9 @@ extension XCUIApplication {
     /// With nothing restored, a document app shows the Open panel at
     /// launch instead. The panel runs in another process, and while it has
     /// focus it takes keystrokes meant for viewMD (such as ⌥⌘S), so the app
-    /// is told to open an untitled document instead.
+    /// is told to open an untitled document instead. Tests use that window
+    /// and don't open another: with two windows, `windows.firstMatch` could
+    /// resolve to either one.
     func launchWithoutRestoredWindows() {
         launchArguments += ["-ApplePersistenceIgnoreState", "YES",
                             "-NSShowAppCentricOpenPanelInsteadOfUntitledFile", "NO"]
