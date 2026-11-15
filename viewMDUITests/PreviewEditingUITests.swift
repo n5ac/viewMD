@@ -127,6 +127,9 @@ final class PreviewEditingUITests: XCTestCase {
         app.typeKey("z", modifierFlags: .command)
         XCTAssertTrue(preview.staticTexts["Alpha"].waitForExistence(timeout: 5), "Undo should restore the rendered text")
         app.typeKey("s", modifierFlags: [.command, .option])
+        // Wait for the pane itself first: reading the text of a pane that
+        // isn't there yet fails at once instead of waiting.
+        XCTAssertTrue(sourceEditor.waitForExistence(timeout: 5), "⌥⌘S should show the source again")
         waitForSource("The document should hold the undone text") { $0 == "Alpha" }
     }
 }
