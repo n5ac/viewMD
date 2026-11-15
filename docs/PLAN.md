@@ -184,6 +184,7 @@ and any requirement that needs a decision.
 | Version | Date | Channel | Notes |
 |---------|------|---------|-------|
 | 0.1 (1) | 2026-11-14 | TestFlight external group **Alpha** (Ed Gonzalez); internal group **viewMD Team** | First alpha. App Store Connect app "viewMD – Markdown Editor" (the name "viewMD" was taken), bundle ID `com.n5ac.viewMD`, SKU `viewMD-mac`. Submitted for Beta App Review. |
+| 0.1 (2) | 2026-11-15 | TestFlight **viewMD Team** (internal) and **Alpha** | Adds Find (⌘F) in both panes (REQ-025). |
 
 **How a release is made:** bump `CURRENT_PROJECT_VERSION` (the build number must increase for every upload), run the full test suite, then `xcodebuild archive -scheme viewMD -configuration Release -archivePath <path>.xcarchive -allowProvisioningUpdates`, then `xcodebuild -exportArchive` with an ExportOptions plist containing `method = app-store-connect` and `destination = upload`. Add the build to the TestFlight group in App Store Connect.
 
